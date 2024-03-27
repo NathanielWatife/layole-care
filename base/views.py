@@ -46,7 +46,6 @@ def contact(request):
         messages.success(request, "Your message has been saved and sent!")
         return redirect('/contact')
     else:
-        messages.error(request, "Your message was not saved try again!!")
         return render(request, 'contact.html')
 
 
