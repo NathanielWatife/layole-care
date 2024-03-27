@@ -5,34 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ToxProgress.animate();
 });
 
-// ===================Send email using ajax========== //
-document.addEventListener("DOMContentLoaded", function() {
-	document.getElementById("appointmentForm").addEventListener("submit", function(event) {
-		event.preventDefault(); //prevent default submission
-		// gather form data
-		var formData = new FormData(this);
-
-		// construct email message
-		var message = "Name: " + formData.get('name') + "\n" + "Email: " + formData.get('email') + "\n" + "Phone: " + formData.get('phone') + "\n" + "Date: " + formData.get('date1') + "\n" + "Note: " + formData.get('note');
-
-		// send the eamil via AJAX
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", "/home");
-		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.onload = function() {
-			if (xhr.status === 200) {
-				// email sent successfully
-				alert("Email sent Successfully");
-			} else {
-				// error handling
-				alert("Failed to senf email, Please try again later.");
-			}
-		};
-		xhr.send(JSON.stringify({message: message}));
-	});
-});
-// 
-
 $(document).ready(function () {
     "use strict";
     //==================load page===============
