@@ -22,14 +22,7 @@ def home(request):
             appoint = Appointment.objects.create(name=name, email=email, date1=date1, phone=phone, note=note)
             appoint.save()
             
-            # Send email with booking details
-            subject = 'New Appointment Booking'
-            message = f'Name: {name}\nEmail: {email}\nPhone: {phone}\nDate: {date1}\nNote: {note}'
-            from_email = settings.EMAIL_HOST_USER
-            to_email = ['awosanminathaniel0@gmail.com']  # Replace with your desired recipient email address
-            
 
-            send_mail(subject, message, from_email, to_email, fail_silently=False)  # Corrected function name
             messages.success(request, "Booking has been saved. An email has been sent with booking details.")
         except ValueError:
             messages.error(request, "Invalid date format. Please enter the date in the format DD/MM/YYYY")
