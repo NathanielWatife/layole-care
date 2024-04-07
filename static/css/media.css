@@ -1,0 +1,389 @@
+@media screen and (max-width: 991px) {
+    .is-sticky {
+        visibility: hidden;
+    } 
+
+    .uni-main-menu .cssmenu {
+        display: none;
+    }
+
+    .uni-banner .uni-banner-img {
+        min-height: 800px;
+        height: 800px; 
+    }
+
+    .mobile-nav #cssmenu {
+        width: 100%;
+        background: #22292d;
+        display: none;
+        position: absolute;
+        min-height: 100%;
+        z-index: 2000000; 
+    }
+
+    .uni-home-latest-post {
+        margin-top: 50px; 
+    }
+    
+    .mobile-nav .uni-icons-close {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: solid 1px #333333;
+        margin: auto;
+        margin-top: 30px;
+        margin-bottom: 35px; 
+    }
+
+    .mobile-nav .uni-icons-close i {
+        font-family: FontAwesome;
+        font-size: 15px;
+        line-height: 2.93;
+        text-align: center;
+        color: #aeaeae; 
+    }
+
+    .mobile-nav #cssmenu ul {
+        width: 100%;
+        display: none;
+        padding: 0 30px;
+        background: transparent; 
+    }
+
+    .mobile-nav #cssmenu ul ul {
+        background: transparent;
+        padding-right: 0; 
+    }
+
+    .mobile-nav #cssmenu.align-center > ul,
+    .mobile-nav #cssmenu.align-right ul ul {
+        text-align: left; 
+    }
+    
+    .mobile-nav #cssmenu ul li,
+    .mobile-nav #cssmenu ul ul li,
+    .mobile-nav #cssmenu ul li:hover > ul > li {
+        width: 100%;
+        height: auto;
+        border-top: 1px solid rgba(120, 120, 120, 0.15); 
+    }
+    
+    .mobile-nav #cssmenu ul ul li,
+    .mobile-nav #cssmenu ul li:hover > ul > li {
+        border-top: 1px solid transparent; 
+    }
+    
+    .mobile-nav #cssmenu li:hover > ul {
+        border-top: 1px solid rgba(120, 120, 120, 0.15); 
+    }
+
+    .mobile-nav #cssmenu ul li a,
+    .mobile-nav #cssmenu ul ul li a {
+        width: 100%;
+        padding: 11px 0;
+        text-transform: inherit; 
+    }
+    
+    .mobile-nav #cssmenu > ul > li,
+    .mobile-nav #cssmenu.align-center > ul > li,
+    .mobile-nav #cssmenu.align-right > ul > li {
+        float: none;
+        display: block; 
+    }
+    
+    .mobile-nav #cssmenu ul ul li:last-child a {
+        border-bottom: none; 
+    }
+    
+    .mobile-nav #cssmenu ul ul li a {
+        display: block;
+        line-height: 24px;
+        font-size: 14px;
+        color: #aeaeae;
+        background: none;
+        border: none;
+        border-bottom: 1px solid rgba(120, 120, 120, 0.15); 
+    }
+    
+    .mobile-nav #cssmenu ul ul li:hover > a,
+    .mobile-nav #cssmenu ul ul li a:hover {
+        color: #3f97da; 
+    }
+    
+    .mobile-nav .home-icon {
+        background: transparent; 
+    }
+    
+    .mobile-nav #cssmenu > ul > li:hover > a,
+    .mobile-nav #cssmenu > ul > li.active > a {
+        color: #3f97da !important; 
+    }
+    
+    .mobile-nav #cssmenu ul ul ul li a {
+        padding-left: 0;
+        border-top: none; 
+    }
+    
+    .mobile-nav #cssmenu ul ul,
+    .mobile-nav #cssmenu ul ul ul {
+        position: relative;
+        left: 0;
+        right: auto;
+        width: 100%;
+        margin: 0;
+        border-top: 1px solid rgba(120, 120, 120, 0.15); 
+    }
+    
+    .mobile-nav #cssmenu > ul > li.has-sub > a::after,
+    .mobile-nav #cssmenu ul ul li.has-sub > a::after {
+        display: none; 
+    }
+    
+    .mobile-nav #menu-line {
+        display: none; 
+    }
+    
+    .mobile-nav #cssmenu #menu-button {
+        display: block;
+        padding: 20px;
+        color: #000000;
+        cursor: pointer; 
+    }
+    
+    .mobile-nav #cssmenu .submenu-button {
+        position: absolute;
+        z-index: 10;
+        right: 0;
+        top: 0;
+        display: block;
+        height: 42px;
+        width: 42px;
+        cursor: pointer;
+        border-left: 1px solid rgba(120, 120, 120, 0.15); 
+    }
+    
+    .mobile-nav #cssmenu .submenu-button::after {
+        content: '\f107';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        display: block;
+        font-family: FontAwesome;
+        color: #fff;
+        z-index: 99; 
+    }
+
+    .mobile-nav #cssmenu .submenu-button.active::before {
+        content: '\f106';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        display: block;
+        font-family: FontAwesome;
+        color: #3f97da;
+        z-index: 99; 
+    }
+    
+    .mobile-nav #cssmenu ul li ul li .submenu-button::after {
+        content: '';
+        position: absolute;
+        top: 21px;
+        left: 20px;
+        display: block;
+        width: 1px;
+        height: 11px;
+        background: #fff;
+        z-index: 99; 
+    }
+    
+    .mobile-nav #cssmenu ul li ul li .submenu-button::before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 21px;
+        display: block;
+        width: 11px;
+        height: 1px;
+        background: #fff;
+        z-index: 99; 
+    }
+    
+    .mobile-nav #cssmenu ul li ul li .submenu-button.active::before {
+        content: '';
+        position: absolute;
+        left: 21px;
+        top: 21px;
+        display: block;
+        width: 11px;
+        height: 1px;
+        background: #3f97da;
+        z-index: 99; 
+    }
+    
+    .mobile-nav #cssmenu .submenu-button.submenu-opened:after {
+        display: none; 
+    }
+    
+    .mobile-nav .navbar-toggle .icon-bar {
+        display: inline-block; 
+    } 
+
+    .uni-search-appointment {
+        display: none; 
+    }
+
+    .footer-default .footer-main-content .footer-main-content-element {
+        margin-bottom: 40px; 
+    }
+
+    .uni-banner .caption p {
+        font-size: 14px; 
+    }
+
+    .uni-home-opening-book {
+        margin-top: 0; 
+    }
+
+    .uni-home-opening-book .uni-single-department-appointment-form {
+        padding: 30px 20px; 
+    }
+
+    .uni-home-2 .uni-header-top {
+        display: none; 
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+@media screen and (max-width: 767px) {
+    .uni-banner .caption a {
+        margin-top: 15px; 
+    }
+
+    .wrapper-logo {
+        -webkit-box-pack: inherit;
+        -ms-flex-pack: inherit;
+        justify-content: inherit; 
+    } 
+
+    .uni-banner .uni-banner-img {
+        min-height: 350px; 
+    }
+
+    .footer-default .copyright-area .copyright-menu {
+        text-align: left; 
+    }
+
+    .footer-default .copyright-area .copyright-menu li a {
+        padding: 0px 5px 26px 5px; 
+    }
+
+    #toTop {
+        bottom: 135px;
+        left: 45%; 
+    }
+
+    .uni-banner .caption h1 {
+        font-size: 24px; 
+    }
+}
+
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+    .uni-main-menu .cssmenu > ul > li > a {
+        font-size: 11px;
+        padding: 45px 10px; 
+    } 
+}
+
+
+
+
+
+@media screen and (max-width: 1199px) and (min-width: 992px) {
+    .uni-search-appointment ul li.uni-btn-appointment a {
+        font-size: 12px;
+        line-height: 35px;
+        padding: 0 10px; 
+    } 
+
+    .footer-default .footer-main-content .uni-footer-newletter .uni-social ul li {
+        margin-right: 5px; 
+    }
+
+    .footer-default .footer-main-content .uni-footer-newletter .uni-social ul li a {
+        width: 35px;
+        height: 35px; }
+
+        .footer-default .copyright-area .copyright-menu li a {
+            padding: 25px 5px; 
+        }
+
+}
+
+
+@media screen and (min-width: 992px) {
+    .uni-form-search-header .box-search-header .uni-input-group {
+        margin: 20px 70px; 
+    } 
+
+    .uni-form-search-header .box-search-header .uni-input-group .btn-search {
+        padding-right: 0;
+        font-size: 24px;
+        color: #47535d; 
+    }
+
+    .uni-form-search-header .box-search-header .uni-input-group .form-control {
+        padding-left: 0;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0; 
+    }
+}   
+
+
+@media screen and (max-width: 991px) and (min-width: 768px) {
+    #toTop {
+        bottom: 85px; 
+    } 
+
+    .uni-banner .uni-banner-img {
+        min-height: 400px; 
+    }
+
+    .uni-banner .caption h1 {
+        font-size: 36px; 
+    }
+}
+
+
+
+
+
+
