@@ -1,0 +1,50 @@
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+<script>
+    // Initialize Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDt3u4o_-4pR84KW8wSeaCtwerHOgydi8s",
+        authDomain: "layole-hospital.firebaseapp.com",
+        projectId: "layole-hospital",
+        storageBucket: "layole-hospital.appspot.com",
+        messagingSenderId: "416984271793",
+        appId: "1:416984271793:web:298c9f56cb4f6b1e420b90",
+        measurementId: "G-BE3EY0BFSG"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Get a reference to the database service (move this outside the Firebase configuration block)
+    const database = firebase.database();
+
+    // Function to handle form submission
+    function handleSubmit(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+        
+        // Get form data
+        const formData = new FormData(event.target);
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const phone = formData.get('phone');
+        const date1 = formData.get('date1');
+        const note = formData.get('note');
+        // Other form fields
+        
+        // Store data in Firebase
+        database.ref('formSubmissions').push({
+            name: name,
+            email: email,
+            phone: phone,
+            date1: date1,
+            note: note
+            // Other form fields
+        }).then(() => {
+            // Handle success
+            alert('Form submitted successfully!');
+            // You can also redirect the user or provide other feedback
+        }).catch((error) => {
+            // Handle errors
+            console.error('Error submitting form:', error);
+            <!-- alert('An error occurred while submitting the form.'); -->
+        });
+    }
+</script>
