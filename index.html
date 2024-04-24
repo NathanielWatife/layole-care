@@ -22,20 +22,8 @@
     <link rel="stylesheet" href="assets/plugin/lightgallery/lightgallery.css">
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <script type="text/javascript"
-    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-</script>
-<script type="text/javascript">
-(function(){
-  emailjs.init({
-    publicKey: "KcCdOYqv4Xv8fFokv",
-  });
-})();
-</script>
-
-
-
-
+    <script src="https://smtpjs.com/v3/smtp.js">
+    </script>
 </head>
 <body>
 
@@ -69,7 +57,9 @@
                             <div class="col-md-2">
                                 <!--LOGO-->
                                 <div class="wrapper-logo">
-                                    <a class="logo-default" href="index.html"><img src="assets/images/logo.png" alt="" class="img-responsive"></a>
+                                    <a class="logo-default" href="index.html">
+                                        <img src="assets/images/logo.png" alt="" class="img-responsive">
+                                    </a>
                                     <div class="clearfix"></div>
                                 </div>
                             </div>
@@ -170,11 +160,15 @@
                                     <div class="uni-single-department-appointment-form">
 
                                         <div class="uni-home-title">
-                                            <h3>Book an appointment</h3>
+                                            <h3>call to Book an appointment</h3>
                                             <div class="uni-underline"></div>
+                                            <div class="row">
+                                                <h4><i class="fa fa-envelope-o" aria-hidden="true"></i> <br> layolehospital@yahoo.com, <br> layolesk@yahoo.com</h4>
+                                                <h4><i class="fa fa-phone" aria-hidden="true"></i><br>+234-7081209617, <br> +234-9067020311</h4>
+                                            </div>
                                         </div>
-
-                                        <form method="POST" id="appointmentForm" onsubmit="handleSubmit(event)">
+                                        
+                                        <!-- <form method="POST" id="appointmentForm">
                                             <div class="row">
                                                 <div class="col-md-5">
                                                     <div class="input-group form-group">
@@ -189,22 +183,16 @@
                                                         <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
                                                         <input type="email" class="form-control" id="email" name="email" value="" placeholder="Email" required>
                                                     </div>
-                                                    <div class="input-group form-group">
-                                                        <div class="input-group date date-check-in" data-date="2017-12-02" data-date-format="yyyy-mm-dd">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-                                                            <input name="date1" id="date1" class="form-control" type="text" value="2017-12-02">
-                                                            <span class="input-group-addon btn"><i class="fa fa-calendar" id="ti-calendar1" aria-hidden="true"></i></span>
-                                                        </div>
-                                                    </div>
+                                                    
                                                 </div>
                                                 <div class="col-md-7">
                                                     <div class="input-group form-group">
                                                         <textarea id="message" name="note" class="form-control" placeholder="Reasons for booking an Appointment?" required></textarea>
                                                     </div>
-                                                    <button class="vk-btn vk-btn-send" type="submit" onclick="sendMail()">Send</button>
+                                                    <button class="vk-btn vk-btn-send" type="submit">Send</button>
                                                 </div>
                                             </div>
-                                        </form>
+                                        </form> -->
                                         
                                     </div>
                                 </div>
@@ -434,17 +422,7 @@
                             </div>
                             <div class="footer-main-content-element col-md-3 col-sm-6">
                                 <aside class="widget">
-                                    <h3 class="widget-title uni-uppercase">quick links</h3>
-                                    <div class="widget-content">
-                                        <div class="uni-quick-link">
-                                            <ul>
-                                                <li><a href="index.html"><span>+</span> Home</a></li>
-                                                <li><a href="about.html"><span>+</span> about</a></li>
-                                                <li><a href="services.html"><span>+</span> services</a></li>
-                                                <li><a href="contact.html"><span>+</span> contact</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    
                                 </aside>
                             </div>
                             <div class="footer-main-content-element col-md-3 col-sm-6">
@@ -457,16 +435,20 @@
                                 </aside>
                             </div>
                             <div class="footer-main-content-element col-md-3 col-sm-6">
-                                <aside class="widget">
-                                    <h3 class="widget-title uni-uppercase">News<span>letter</span></h3>
+                                
                                     <div class="widget-content">
                                         <div class="uni-footer-newletter">
-                                            <form action="" method="post">
-												<div class="input-group">
-													<input type="email" name="email" class="form-control" placeholder="Enter your email">
-													<button class="btn btn-sub" type="submit">subscribe</button>
-												</div>
-											</form>
+                                            <h3 class="widget-title uni-uppercase">quick links</h3>
+                                    <div class="widget-content">
+                                        <div class="uni-quick-link">
+                                            <ul>
+                                                <li><a href="index.html"><span>+</span> Home</a></li>
+                                                <li><a href="about.html"><span>+</span> about</a></li>
+                                                <li><a href="services.html"><span>+</span> services</a></li>
+                                                <li><a href="contact.html"><span>+</span> contact</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                             <div class="uni-social">
                                                 <h4>Follow us</h4>
                                                 <ul>
