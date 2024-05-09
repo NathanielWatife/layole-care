@@ -91,7 +91,7 @@ a:hover {
 
 /*LOGO*/
 .wrapper-logo {
-  min-height: 100px;
+  min-height: 80px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -6745,7 +6745,7 @@ a:hover {
 
 .img-responsive-logo {
   display: block;
-  max-width: 100%;
+  max-width: 90%;
   height: auto;
 }
 
