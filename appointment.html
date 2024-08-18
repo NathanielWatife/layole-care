@@ -21,8 +21,13 @@
     <link rel="stylesheet" href="assets/plugin/datetimepicker/bootstrap-datetimepicker.min.css">
     <link rel="stylesheet" href="assets/plugin/lightgallery/lightgallery.css">
     <link rel="stylesheet" href="assets/css/style.css">
-
-    <script src="https://smtpjs.com/v3/smtp.js">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+        emailjs.init({
+                publicKey: "z5odVN325xOTepThw",
+            });
+        })();
     </script>
 </head>
 <body>
@@ -114,8 +119,7 @@
                             <h3>Book an appointment</h3>
                             <div class="uni-underline"></div>
                         </div>
-
-                        <form method="POST" action="/send-email">
+                        <form method="post" onsubmit="return sendMail(event)">
                             <div class="row">
                                 <div class="col-md-5">
                                     <div class="input-group form-group">
@@ -125,7 +129,7 @@
                                     </div>
                                     <div class="input-group form-group">
                                         <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
-                                        <input type="tel" class="form-control" id="phone" name="phone" value="" placeholder="Phone number" minlength="7" maxlength="11" required>
+                                        <input type="tel" class="form-control" id="subject" name="subject" value="" placeholder="Phone number" minlength="7" maxlength="11" required>
                                         
                                     </div>
                                     <div class="input-group form-group">
@@ -275,7 +279,8 @@
 <script src="assets/plugin/sticky/jquery.sticky.js"></script>
 
 <script src="assets/js/main.js"></script>
-<script src="assets/js/server.js"></script>
+<script src="assets/js/mail.js"></script>
+
 <!-- ajax scripts -->
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
 
