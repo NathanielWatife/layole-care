@@ -7,6 +7,8 @@ require("dotenv").config()
 const connectDB = require("./config/db")
 const appointmentRoutes = require("./routes/appointmentRoutes")
 const contactRoutes = require("./routes/contactRoutes")
+const authRoutes = require("./routes/authRoutes")
+const dashboardRoutes = require("./routes/dashboardRoutes")
 const utilityRoutes = require("./routes/utilityRoutes")
 const errorHandler = require("./middleware/errorHandler")
 
@@ -39,6 +41,8 @@ const limiter = rateLimit({
 app.use("/api/", limiter)
 
 // routes
+app.use("/api/auth", authRoutes)
+app.use("/api/dashboard", dashboardRoutes)
 app.use("/api/appointments", appointmentRoutes)
 app.use("/api/contact", contactRoutes)
 app.use("/api", utilityRoutes)
@@ -53,8 +57,8 @@ app.use((req, res) => {
 
 // server
 app.listen(PORT, () => {
-    console.log(`Hospital backend server running on port ${PORT}`)
-    console.log(`Health Check: http://localhost:${PORT}/api/health`)
+    console.log(`Layole backend server running on port ${PORT}`)
+    console.log(`Layole Health Check: http://localhost:${PORT}/api/health`)
 })
 
 module.exports = app
