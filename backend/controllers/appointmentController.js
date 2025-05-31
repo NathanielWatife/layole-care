@@ -3,6 +3,7 @@ const { sendAppointmentConfirmation, sendAppointmentNotification } = require("..
 const { sendEmail } = require("../utils/sendEmail")
 
 
+// create new appointment
 const createAppointment = async (req, res, next) => {
     try {
         const appointmentData = req.body;
@@ -33,7 +34,7 @@ const createAppointment = async (req, res, next) => {
             `Appointment confirmed for ${new Date (appointment.appointmentDate). toLocaleDateString()} at ${appointment.appointmentTime}`,
         )
 
-        // end the notification email to hospital
+        // send the notification email to hospital
         const hospitalEmailHtml = sendAppointmentNotification(appointment)
         await sendEmail(
             process.env.HOSPITAL_EMIL || "hospitale-mail",
@@ -56,7 +57,7 @@ const createAppointment = async (req, res, next) => {
     }
 }
 
-// get appointments by admin
+// get all appointments by admin
 const getAppointments = async (req, res, next) => {
     try {
         const { page = 1, limit = 10,status, department, date, search } = req.query
