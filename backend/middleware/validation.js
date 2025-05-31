@@ -13,6 +13,43 @@ const handleValidationErrors = (req, res, next) => {
   next()
 }
 
+// Login validation rules
+const validateLogin = [
+  body("username").trim().isLength({ min: 1 }).withMessage("Username or email is required"),
+
+  body("password").isLength({ min: 1 }).withMessage("Password is required"),
+
+  handleValidationErrors,
+]
+
+// Profile update validation rules
+const validateProfileUpdate = [
+  body("firstName")
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage("First name must be between 1 and 50 characters"),
+
+  body("lastName")
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage("Last name must be between 1 and 50 characters"),
+
+  body("email").optional().isEmail().normalizeEmail().withMessage("Please provide a valid email address"),
+
+  handleValidationErrors,
+]
+
+// Password change validation rules
+const validatePasswordChange = [
+  body("currentPassword").isLength({ min: 1 }).withMessage("Current password is required"),
+
+  body("newPassword").isLength({ min: 6 }).withMessage("New password must be at least 6 characters long"),
+
+  handleValidationErrors,
+]
+
 // Appointment validation rules
 const validateAppointment = [
   body("firstName")
@@ -118,6 +155,9 @@ const validateContact = [
 ]
 
 module.exports = {
+  validateLogin,
+  validateProfileUpdate,
+  validatePasswordChange,
   validateAppointment,
   validateContact,
 }
