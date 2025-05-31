@@ -23,7 +23,7 @@ connectDB()
 app.use(helmet())
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL || "http://localhost:8080",
+        origin: process.env.FRONTEND_URL || "http://localhost:8080" || "http://172.20.10.3:8080 " ,
         credentials: true,
     }),
 )

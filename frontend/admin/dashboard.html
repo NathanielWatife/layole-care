@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Layole Hospital</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-hospital"></i>
+                <span>Layole Admin</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item active">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="appointments.html" class="nav-link">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                        <span class="badge" id="pendingBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="contacts.html" class="nav-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                        <span class="badge" id="messagesBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button onclick="logout()" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="admin-info">
+                    <span class="admin-name" id="adminName">Loading...</span>
+                    <div class="admin-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalAppointments">0</h3>
+                        <p>Total Appointments</p>
+                        <span class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +<span id="weeklyIncrease">0</span> this week
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pendingAppointments">0</h3>
+                        <p>Pending Appointments</p>
+                        <span class="stat-change">
+                            <i class="fas fa-calendar-day"></i>
+                            <span id="todayAppointments">0</span> today
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="completedAppointments">0</h3>
+                        <p>Completed Appointments</p>
+                        <span class="stat-change positive">
+                            <i class="fas fa-percentage"></i>
+                            <span id="completionRate">0</span>% completion rate
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon cancelled">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="cancelledAppointments">0</h3>
+                        <p>Cancelled Appointments</p>
+                        <span class="stat-change negative">
+                            <i class="fas fa-percentage"></i>
+                            <span id="cancellationRate">0</span>% cancellation rate
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <!-- Appointments Trend Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Appointments Trend</h3>
+                        <div class="chart-controls">
+                            <select id="trendPeriod" onchange="updateTrendChart()">
+                                <option value="week">Last 7 Days</option>
+                                <option value="month" selected>Last 30 Days</option>
+                                <option value="year">Last Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="appointmentsTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Status Distribution Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Appointment Status Distribution</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="statusDistributionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Department Distribution Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Appointments by Department</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="departmentChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Peak Hours Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Peak Appointment Hours</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="peakHoursChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+                <div class="recent-appointments">
+                    <div class="section-header">
+                        <h3>Recent Appointments</h3>
+                        <a href="appointments.html" class="view-all">View All</a>
+                    </div>
+                    <div class="appointments-list" id="recentAppointments">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <div class="recent-contacts">
+                    <div class="section-header">
+                        <h3>Recent Messages</h3>
+                        <a href="contacts.html" class="view-all">View All</a>
+                    </div>
+                    <div class="contacts-list" id="recentContacts">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading dashboard...</p>
+        </div>
+    </div>
+
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

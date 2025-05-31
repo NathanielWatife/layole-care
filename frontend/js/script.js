@@ -96,7 +96,7 @@ function closeSuccessMessage() {
 
 // Get Directions Function
 function getDirections() {
-  const hospitalAddress = "123 Healthcare Avenue, Medical City, MC 12345"
+  const hospitalAddress = "Oyemekun Street, no 89 Off College Road, Ifako-Ijaiye, Lagos, Nigeria."
   const encodedAddress = encodeURIComponent(hospitalAddress)
   const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`
   window.open(googleMapsUrl, "_blank")
