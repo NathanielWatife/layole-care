@@ -25,14 +25,7 @@ const appointmentSchema = new mongoose.Schema(
       required: [true, "Phone number is required"],
       match: [/^[+]?[1-9][\d]{0,15}$/, "Please enter a valid phone number"],
     },
-    dateOfBirth: {
-      type: Date,
-      required: [true, "Date of birth is required"],
-      validate: {
-        validator: (value) => value < new Date(),
-        message: "Date of birth must be in the past",
-      },
-    },
+    
     gender: {
       type: String,
       required: [true, "Gender is required"],

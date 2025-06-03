@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const helmet = require("helmet")
 const rateLimit = require("express-rate-limit")
+const path = require('path');
 require("dotenv").config()
 
 const connectDB = require("./config/db")
@@ -15,25 +16,42 @@ const errorHandler = require("./middleware/errorHandler")
 
 const app = express()
 const PORT = process.env.PORT || 3000
-
+app.use(express.static(path.join(__dirname, '../frontend')));
 // connect to databse
 connectDB()
 
 // middleware
 app.use(helmet())
+// app.use(
+//     cors({
+//         origin: [
+//             process.env.FRONTEND_URL,
+//             "http://localhost:3000", // add this for local dev
+//             "http://127.0.0.1:3000"
+//         ].filter(Boolean),
+//         methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//         allowedHeaders: ['Content-Type', 'Authorization'],
+//         credentials: true,
+//     }),
+// )
+
+
+// use origin:true for testing purposes
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL || "http://localhost:8080" || "http://172.20.10.3:8080 " ,
-        credentials: true,
-    }),
+        origin: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials:true
+    })
 )
 
-app.use(express.json({ limit: "10mb" }))
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // rate limiting
 const limiter = rateLimit({
-    windowMS: 15 * 60 * 1000,
+    windowMs: 15 * 60 * 1000,
     max: 100,
     message: "Too many requests from this, please try again later"
 })
@@ -41,6 +59,13 @@ const limiter = rateLimit({
 app.use("/api/", limiter)
 
 // routes
+app.get('*', (req, res, next) => {
+    if (!req.path.startsWith('/api/')) {
+        res.sendFile(path.join(__dirname, '../frontend/index.html'));
+    } else {
+        next();
+    }
+});
 app.use("/api/auth", authRoutes)
 app.use("/api/dashboard", dashboardRoutes)
 app.use("/api/appointments", appointmentRoutes)

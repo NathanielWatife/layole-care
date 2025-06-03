@@ -2,9 +2,8 @@ const Appointment = require("../models/Appointment")
 const { sendAppointmentConfirmation, sendAppointmentNotification } = require("../utils/emailTemplates")
 const { sendEmail } = require("../utils/sendEmail")
 
-// @desc    Create new appointment
-// @route   POST /api/appointments
-// @access  Public
+
+
 const createAppointment = async (req, res, next) => {
   try {
     const appointmentData = req.body
@@ -65,9 +64,7 @@ const createAppointment = async (req, res, next) => {
   }
 }
 
-// @desc    Get all appointments
-// @route   GET /api/appointments
-// @access  Private (Admin)
+
 const getAppointments = async (req, res, next) => {
   try {
     const { page = 1, limit = 10, status, department, date, search } = req.query
@@ -119,9 +116,7 @@ const getAppointments = async (req, res, next) => {
   }
 }
 
-// @desc    Get single appointment
-// @route   GET /api/appointments/:id
-// @access  Private (Admin)
+
 const getAppointment = async (req, res, next) => {
   try {
     const appointment = await Appointment.findById(req.params.id)
@@ -142,9 +137,7 @@ const getAppointment = async (req, res, next) => {
   }
 }
 
-// @desc    Update appointment status
-// @route   PUT /api/appointments/:id
-// @access  Private (Admin)
+
 const updateAppointment = async (req, res, next) => {
   try {
     const { status, notes } = req.body
@@ -173,9 +166,7 @@ const updateAppointment = async (req, res, next) => {
   }
 }
 
-// @desc    Delete appointment
-// @route   DELETE /api/appointments/:id
-// @access  Private (Admin)
+
 const deleteAppointment = async (req, res, next) => {
   try {
     const appointment = await Appointment.findById(req.params.id)
@@ -198,9 +189,7 @@ const deleteAppointment = async (req, res, next) => {
   }
 }
 
-// @desc    Get appointment statistics
-// @route   GET /api/appointments/stats
-// @access  Private (Admin)
+
 const getAppointmentStats = async (req, res, next) => {
   try {
     const today = new Date()

@@ -17,6 +17,11 @@ if (hamburger && navMenu) {
   )
 }
 
+// baseurl configuration
+const API_BASE_URL = window.location.origin.includes('localhost')
+  ? 'http://localhost:3000'
+  : window.location.origin;
+
 // Appointment Form Handling
 const appointmentForm = document.getElementById("appointmentForm")
 if (appointmentForm) {
@@ -27,7 +32,7 @@ if (appointmentForm) {
     const appointmentData = Object.fromEntries(formData)
 
     try {
-      const response = await fetch("http://localhost:3000/api/appointments", {
+      const response = await fetch(`${API_BASE_URL}/api/appointments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,9 +61,10 @@ if (contactForm) {
 
     const formData = new FormData(contactForm)
     const contactData = Object.fromEntries(formData)
+    console.log(contactData)
 
     try {
-      const response = await fetch("http://localhost:3000/api/contact", {
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
