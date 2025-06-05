@@ -89,7 +89,7 @@
                 </div>
 
                 <div class="contact-form-section">
-                    <form id="contactForm" class="contact-form">
+                    <form id="contactForm" class="contact-form" autocomplete="off" spellcheck="false">
                         <h2>Send us a Message</h2>
                         
                         <div class="form-row">
@@ -145,6 +145,18 @@
                             Send Message
                         </button>
                     </form>
+                    <!-- Success Modal -->
+                    <div id="successMessage" class="success-modal" style="display:none;">
+                        <div class="modal-content">
+                            <span class="close-modal" onclick="closeSuccessMessage()">&times;</span>
+                            <div class="modal-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 class="modal-message">Thank you!</h3>
+                            <p>We've received your message and will respond shortly.</p>
+                            <button onclick="closeSuccessMessage()" class="modal-button">OK</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
