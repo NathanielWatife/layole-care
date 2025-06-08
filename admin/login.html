@@ -25,7 +25,7 @@
                         <i class="fas fa-user"></i>
                         Username or Email
                     </label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" id="username" name="username" required autocomplete="username">
                 </div>
 
                 <div class="form-group">
@@ -34,8 +34,8 @@
                         Password
                     </label>
                     <div class="password-input">
-                        <input type="password" id="password" name="password" required>
-                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                        <button type="button" class="toggle-password" id="togglePassword">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -63,10 +63,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="login-background">
-            <div class="bg-pattern"></div>
-        </div>
     </div>
 
     <!-- Loading Overlay -->
@@ -82,7 +78,7 @@
         <div class="error-content">
             <i class="fas fa-exclamation-triangle"></i>
             <span id="errorText"></span>
-            <button onclick="hideError()" class="close-error">
+            <button id="closeError" class="close-error">
                 <i class="fas fa-times"></i>
             </button>
         </div>
