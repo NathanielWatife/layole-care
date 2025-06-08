@@ -1,163 +1,150 @@
 // Admin Authentication JavaScript
+const API_BASE_URL = "https://layole-backend.onrender.com";
 
-// API Base URL
-const API_BASE_URL = "http://localhost:3000/api"
-
-// Check if user is authenticated
+// Check authentication state
 function checkAuth() {
-  const token = localStorage.getItem("adminToken")
-  const currentPage = window.location.pathname
+  const token = getToken();
+  const isLoginPage = window.location.pathname.endsWith("login.html");
+  const isDashboardPage = window.location.pathname.endsWith("dashboard.html");
 
-  if (!token && !currentPage.includes("login.html")) {
-    window.location.href = "login.html"
-    return false
+  console.log("Auth check - Token exists:", !!token, "on page:", window.location.pathname);
+
+  if (!token && !isLoginPage) {
+    console.log("No token - redirecting to login");
+    window.location.href = "login.html";
+    return false;
   }
 
-  if (token && currentPage.includes("login.html")) {
-    window.location.href = "dashboard.html"
-    return false
+  if (token && isLoginPage) {
+    console.log("Token exists - redirecting to dashboard");
+    window.location.href = "dashboard.html";
+    return false;
   }
 
-  return true
+  return true;
 }
-
-// Login functionality
-document.addEventListener("DOMContentLoaded", () => {
-  // Check authentication on page load
-  checkAuth()
-
-  // Login form handler
-  const loginForm = document.getElementById("loginForm")
-  if (loginForm) {
-    loginForm.addEventListener("submit", handleLogin)
-  }
-
-  // Load admin profile if on dashboard
-  if (!window.location.pathname.includes("login.html")) {
-    loadAdminProfile()
-  }
-})
 
 // Handle login form submission
 async function handleLogin(e) {
-  e.preventDefault()
+  e.preventDefault();
+  console.log("Login form submitted");
 
-  const username = document.getElementById("username").value
-  const password = document.getElementById("password").value
-  const rememberMe = document.getElementById("rememberMe").checked
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const rememberMe = document.getElementById("rememberMe").checked;
 
   if (!username || !password) {
-    showError("Please enter both username and password")
-    return
+    showError("Please enter both username and password");
+    return;
   }
 
-  showLoading(true)
+  showLoading(true);
 
   try {
+    console.log("Attempting login...");
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ username, password }),
-    })
+    });
 
-    const data = await response.json()
+    const data = await response.json();
+    console.log("Login response:", data);
 
     if (data.success) {
-      // Store token
-      if (rememberMe) {
-        localStorage.setItem("adminToken", data.data.token)
-        localStorage.setItem("adminData", JSON.stringify(data.data.admin))
-      } else {
-        sessionStorage.setItem("adminToken", data.data.token)
-        sessionStorage.setItem("adminData", JSON.stringify(data.data.admin))
-      }
+      console.log("Login successful - storing token");
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("adminToken", data.data.token);
+      storage.setItem("adminData", JSON.stringify(data.data.admin));
 
-      // Redirect to dashboard
-      window.location.href = "dashboard.html"
+      // Small delay to ensure storage is committed
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 100);
     } else {
-      showError(data.error || "Login failed")
+      showError(data.error || "Login failed. Please try again.");
     }
   } catch (error) {
-    console.error("Login error:", error)
-    showError("Network error. Please try again.")
+    console.error("Login error:", error);
+    showError("Network error. Please check your connection.");
   } finally {
-    showLoading(false)
+    showLoading(false);
   }
 }
 
-// Load admin profile
+// Load admin profile data
 async function loadAdminProfile() {
-  const token = getToken()
-  if (!token) return
+  console.log("Loading admin profile...");
+  const token = getToken();
+  
+  if (!token) {
+    console.log("No token available - logging out");
+    logout();
+    return;
+  }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/profile`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const { response, data } = await apiRequest("/auth/profile");
+    console.log("Profile response:", data);
 
-    const data = await response.json()
-
-    if (data.success) {
-      updateAdminInfo(data.data.admin)
-    } else {
-      if (response.status === 401) {
-        logout()
-      }
+    if (data?.success) {
+      updateAdminInfo(data.data.admin);
+    } else if (response?.status === 401) {
+      console.log("Unauthorized - logging out");
+      logout();
     }
   } catch (error) {
-    console.error("Profile load error:", error)
+    console.error("Profile load error:", error);
+    logout();
   }
 }
 
 // Update admin info in UI
 function updateAdminInfo(admin) {
-  const adminNameElement = document.getElementById("adminName")
+  console.log("Updating admin info:", admin);
+  const adminNameElement = document.getElementById("adminName");
   if (adminNameElement) {
-    adminNameElement.textContent = admin.fullName
+    adminNameElement.textContent = admin.fullName || `${admin.firstName} ${admin.lastName}`;
   }
 
-  // Store updated admin data
-  const storage = localStorage.getItem("adminToken") ? localStorage : sessionStorage
-  storage.setItem("adminData", JSON.stringify(admin))
+  const storage = localStorage.getItem("adminToken") ? localStorage : sessionStorage;
+  storage.setItem("adminData", JSON.stringify(admin));
 }
 
 // Get stored token
 function getToken() {
-  return localStorage.getItem("adminToken") || sessionStorage.getItem("adminToken")
+  return localStorage.getItem("adminToken") || sessionStorage.getItem("adminToken");
 }
 
 // Get stored admin data
 function getAdminData() {
-  const data = localStorage.getItem("adminData") || sessionStorage.getItem("adminData")
-  return data ? JSON.parse(data) : null
+  const data = localStorage.getItem("adminData") || sessionStorage.getItem("adminData");
+  return data ? JSON.parse(data) : null;
 }
 
-// Logout functionality
+// Logout and clear session
 function logout() {
-  // Clear stored data
-  localStorage.removeItem("adminToken")
-  localStorage.removeItem("adminData")
-  sessionStorage.removeItem("adminToken")
-  sessionStorage.removeItem("adminData")
-
-  // Redirect to login
-  window.location.href = "login.html"
+  console.log("Logging out...");
+  localStorage.removeItem("adminToken");
+  localStorage.removeItem("adminData");
+  sessionStorage.removeItem("adminToken");
+  sessionStorage.removeItem("adminData");
+  window.location.href = "login.html";
 }
 
-// API request helper with authentication
+// API request helper
 async function apiRequest(endpoint, options = {}) {
-  const token = getToken()
+  const token = getToken();
+  console.log("Making API request to:", endpoint);
 
   const defaultOptions = {
     headers: {
       "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
     },
-  }
+  };
 
   const mergedOptions = {
     ...defaultOptions,
@@ -166,127 +153,85 @@ async function apiRequest(endpoint, options = {}) {
       ...defaultOptions.headers,
       ...options.headers,
     },
-  }
+  };
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, mergedOptions)
-    const data = await response.json()
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, mergedOptions);
+    const data = await response.json();
 
     if (response.status === 401) {
-      logout()
-      return null
+      console.log("API 401 Unauthorized");
+      logout();
+      return null;
     }
 
-    return { response, data }
+    return { response, data };
   } catch (error) {
-    console.error("API request error:", error)
-    throw error
+    console.error("API request failed:", error);
+    throw error;
   }
 }
 
-// Show loading overlay
+// UI Functions
 function showLoading(show) {
-  const overlay = document.getElementById("loadingOverlay")
+  const overlay = document.getElementById("loadingOverlay");
   if (overlay) {
-    overlay.style.display = show ? "flex" : "none"
+    overlay.style.display = show ? "flex" : "none";
   }
 }
 
-// Show error message
 function showError(message) {
-  const errorElement = document.getElementById("errorMessage")
-  const errorText = document.getElementById("errorText")
+  console.error("Showing error:", message);
+  const errorElement = document.getElementById("errorMessage");
+  const errorText = document.getElementById("errorText");
 
   if (errorElement && errorText) {
-    errorText.textContent = message
-    errorElement.style.display = "block"
-
-    // Auto hide after 5 seconds
-    setTimeout(() => {
-      hideError()
-    }, 5000)
+    errorText.textContent = message;
+    errorElement.style.display = "block";
+    setTimeout(hideError, 5000);
   } else {
-    alert(message)
+    alert(message);
   }
 }
 
-// Hide error message
 function hideError() {
-  const errorElement = document.getElementById("errorMessage")
+  const errorElement = document.getElementById("errorMessage");
   if (errorElement) {
-    errorElement.style.display = "none"
+    errorElement.style.display = "none";
   }
 }
 
-// Toggle password visibility
 function togglePassword() {
-  const passwordInput = document.getElementById("password")
-  const toggleButton = document.querySelector(".toggle-password i")
+  const passwordInput = document.getElementById("password");
+  const toggleButton = document.querySelector(".toggle-password i");
 
   if (passwordInput.type === "password") {
-    passwordInput.type = "text"
-    toggleButton.className = "fas fa-eye-slash"
+    passwordInput.type = "text";
+    toggleButton.className = "fas fa-eye-slash";
   } else {
-    passwordInput.type = "password"
-    toggleButton.className = "fas fa-eye"
+    passwordInput.type = "password";
+    toggleButton.className = "fas fa-eye";
   }
 }
 
-// Toggle sidebar (mobile)
-function toggleSidebar() {
-  const sidebar = document.querySelector(".sidebar")
-  if (sidebar) {
-    sidebar.classList.toggle("active")
+// Initialize authentication
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("Admin auth initialized");
+  
+  // Only run auth check if not on login page
+  if (!window.location.pathname.endsWith("login.html")) {
+    checkAuth();
+    loadAdminProfile();
   }
-}
 
-// Format date for display
-function formatDate(dateString) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })
-}
-
-// Format time for display
-function formatTime(timeString) {
-  const [hours, minutes] = timeString.split(":")
-  const hour = Number.parseInt(hours)
-  const ampm = hour >= 12 ? "PM" : "AM"
-  const displayHour = hour % 12 || 12
-  return `${displayHour}:${minutes} ${ampm}`
-}
-
-// Format department name
-function formatDepartment(department) {
-  return department
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ")
-}
-
-// Handle network errors
-function handleNetworkError(error) {
-  console.error("Network error:", error)
-  showError("Network error. Please check your connection and try again.")
-}
-
-// Debounce function for search inputs
-function debounce(func, wait) {
-  let timeout
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout)
-      func(...args)
-    }
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
+  // Setup login form if present
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", handleLogin);
   }
-}
+});
 
-// Export functions for use in other scripts
+// Export to window
 window.adminAuth = {
   checkAuth,
   getToken,
@@ -296,9 +241,5 @@ window.adminAuth = {
   showLoading,
   showError,
   hideError,
-  formatDate,
-  formatTime,
-  formatDepartment,
-  handleNetworkError,
-  debounce,
-}
+  togglePassword
+};
