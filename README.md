@@ -17,6 +17,13 @@ hospital-website/
 │   └── js/
 │       └── script.js
 └── backend/
+    ├── controller
+    ├── config
+    ├── models
+    ├── middleware
+    ├── routes
+    ├── utils
+    ├── scripts
     ├── server.js
     ├── package.json
     ├── .env.example

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Layole Hospital</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-hospital"></i>
+                <span>Layole Admin</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item active">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="appointments.html" class="nav-link">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                        <span class="badge" id="pendingBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="contacts.html" class="nav-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                        <span class="badge" id="messagesBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button onclick="logout()" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+        <header class="content-header">
+          <h1>Blog Management</h1>
+          <button class="btn-primary" id="newPostBtn">
+            <i class="fas fa-plus"></i> New Post
+          </button>
+        </header>
+    
+        <div class="blog-management">
+          <div class="blog-filters">
+            <select id="statusFilter">
+              <option value="all">All Statuses</option>
+              <option value="published">Published</option>
+              <option value="draft">Drafts</option>
+            </select>
+            <input type="text" id="blogSearch" placeholder="Search posts...">
+            <button id="applyFilters">Apply</button>
+          </div>
+    
+          <div class="blog-list" id="blogList">
+            <!-- Blog posts will be loaded here -->
+            <div class="loading">Loading posts...</div>
+          </div>
+    
+          <div class="pagination" id="blogPagination">
+            <!-- Pagination will be added here -->
+          </div>
+        </div>
+      </main>
+    
+      <!-- Blog Editor Modal -->
+      <div class="modal" id="blogEditorModal" style="display:none;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 id="modalTitle">New Blog Post</h2>
+            <button class="close-modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="blogForm" enctype="multipart/form-data">
+              <input type="hidden" id="postId">
+              
+              <div class="form-group">
+                <label for="postTitle">Title</label>
+                <input type="text" id="postTitle" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="postImage">Featured Image</label>
+                <input type="file" id="postImage" accept="image/*">
+                <div class="image-preview" id="imagePreview"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="postContent">Content</label>
+                <textarea id="postContent" rows="10"></textarea>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="postExcerpt">Excerpt</label>
+                  <textarea id="postExcerpt" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                  <label>Categories</label>
+                  <div class="checkbox-group" id="categoryCheckboxes">
+                    <!-- Categories will be added here -->
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="postStatus">Status</label>
+                  <select id="postStatus">
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="postDate">Publish Date</label>
+                  <input type="datetime-local" id="postDate">
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button type="button" class="btn-secondary" id="cancelPost">Cancel</button>
+                <button type="submit" class="btn-primary" id="savePost">Save Post</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading dashboard...</p>
+        </div>
+    </div>
+
+    <script src="../js/admin-blog.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+    <script>
+        // Initialize sidebar toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        }
+
+        // Add to adminAuth for formatting
+        window.adminAuth = window.adminAuth || {};
+        window.adminAuth.formatDate = (dateString) => {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        };
+    </script>
+</body>
+</html>
