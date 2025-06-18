@@ -20,6 +20,62 @@ if (hamburger && navMenu) {
   )
 }
 
+// Initialize Hero Image Carousel
+function initHeroCarousel() {
+  const images = document.querySelectorAll('.hero-images img');
+  if (!images.length) return;
+
+  // Create dots container if it doesn't exist
+  let dotsContainer = document.querySelector('.hero-dots');
+  if (!dotsContainer) {
+    dotsContainer = document.createElement('div');
+    dotsContainer.className = 'hero-dots';
+    document.querySelector('.hero-images').appendChild(dotsContainer);
+  } else {
+    // Clear existing dots
+    dotsContainer.innerHTML = '';
+  }
+
+  let current = 0;
+  let interval;
+
+  // Create dots for each image
+  images.forEach((img, idx) => {
+    const dot = document.createElement('div');
+    dot.className = 'hero-dot' + (idx === 0 ? ' active' : '');
+    dot.addEventListener('click', () => showSlide(idx));
+    dotsContainer.appendChild(dot);
+  });
+
+  function showSlide(idx) {
+    images[current].classList.remove('active');
+    dotsContainer.children[current].classList.remove('active');
+    current = idx;
+    images[current].classList.add('active');
+    dotsContainer.children[current].classList.add('active');
+    resetInterval();
+  }
+
+  function nextSlide() {
+    showSlide((current + 1) % images.length);
+  }
+
+  function resetInterval() {
+    clearInterval(interval);
+    interval = setInterval(nextSlide, 5000);
+  }
+
+  // Initialize first slide
+  images[0].classList.add('active');
+  interval = setInterval(nextSlide, 5000);
+
+  // Pause on hover
+  const heroContainer = document.querySelector('.hero-images');
+  if (heroContainer) {
+    heroContainer.addEventListener('mouseenter', () => clearInterval(interval));
+    heroContainer.addEventListener('mouseleave', resetInterval);
+  }
+}
 // Appointment Form Handling
 const appointmentForm = document.getElementById("appointmentForm");
 if (appointmentForm) {
@@ -259,7 +315,7 @@ function showLoading(button) {
   }
 }
 
-// Initialize Google Maps (placeholder function)
+// Initialize Google Maps (placeholder function
 function initMap() {
   // This would be implemented with actual Google Maps API
   console.log("Google Maps would be initialized here")
@@ -294,4 +350,7 @@ window.addEventListener("resize", () => {
   }
 })
 
-console.log("Hospital website scripts loaded successfully")
+document.addEventListener('DOMContentLoaded', function() {
+  initHeroCarousel();
+  console.log("Hospital website scripts loaded successfully");
+});

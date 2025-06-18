@@ -150,6 +150,7 @@ function filterArticles(articles) {
             article.title.toLowerCase().includes(searchTerm) || 
             article.excerpt.toLowerCase().includes(searchTerm) ||
             article.content.toLowerCase().includes(searchTerm)
+        );
     }
     
     return filtered;

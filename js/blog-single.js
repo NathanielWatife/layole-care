@@ -45,20 +45,82 @@ async function loadArticle() {
     }
 }
 
-// Same simulated API functions as in blog.js
 async function fetchMedicalNews() {
     await new Promise(resolve => setTimeout(resolve, 500));
-    return [...]; // Same data as in blog.js
+    return [
+        {
+            id: '1',
+            title: 'New Breakthrough in Cancer Treatment',
+            excerpt: 'Researchers have discovered a promising new approach to treating advanced cancers.',
+            content: '<p>Detailed content about the cancer treatment breakthrough...</p>',
+            category: 'Medical Tips',
+            date: '2025-05-15',
+            imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600',
+            author: 'Dr. Sarah Johnson'
+        },
+        {
+            id: '2',
+            title: 'The Future of Robotic Surgery',
+            excerpt: 'How robotic assistance is transforming surgical procedures.',
+            content: '<p>Detailed content about robotic surgery...</p>',
+            category: 'Medical Tips',
+            date: '2025-04-28',
+            imageUrl: 'https://images.unsplash.com/photo-1581595219315-a187dd40c322?w=600',
+            author: 'Dr. Michael Chen'
+        }
+    ];
 }
 
 async function fetchHealthTips() {
     await new Promise(resolve => setTimeout(resolve, 500));
-    return [...]; // Same data as in blog.js
+    return [
+        {
+            id: '3',
+            title: '10 Daily Habits for Better Heart Health',
+            excerpt: 'Simple changes you can make to improve your cardiovascular health.',
+            content: '<p>Detailed content about heart health habits...</p>',
+            category: 'Health Tips',
+            date: '2025-05-10',
+            imageUrl: 'https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?w=600',
+            author: 'Dr. Emily Wilson'
+        },
+        {
+            id: '4',
+            title: 'Managing Stress in a Busy World',
+            excerpt: 'Effective techniques to reduce stress and improve mental wellbeing.',
+            content: '<p>Detailed content about stress management...</p>',
+            category: 'Health Tips',
+            date: '2025-04-22',
+            imageUrl: 'https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?w=600',
+            author: 'Dr. James Peterson'
+        }
+    ];
 }
 
 async function fetchDiseaseInfo() {
     await new Promise(resolve => setTimeout(resolve, 500));
-    return [...]; // Same data as in blog.js
+    return [
+        {
+            id: '5',
+            title: 'Understanding Diabetes: Prevention and Management',
+            excerpt: 'Comprehensive guide to diabetes symptoms, prevention and treatment.',
+            content: '<p>Detailed content about diabetes...</p>',
+            category: 'Diseases',
+            date: '2025-05-05',
+            imageUrl: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=600',
+            author: 'Dr. Robert Taylor'
+        },
+        {
+            id: '6',
+            title: 'Seasonal Allergies: Causes and Remedies',
+            excerpt: 'How to identify and manage common seasonal allergies.',
+            content: '<p>Detailed content about seasonal allergies...</p>',
+            category: 'Diseases',
+            date: '2025-04-15',
+            imageUrl: 'https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=600',
+            author: 'Dr. Lisa Rodriguez'
+        }
+    ];
 }
 
 function renderArticle(article) {
