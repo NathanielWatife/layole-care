@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Layole Hospital</title>
+    <title>Health Blog - Layole Hospital</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/blog.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -17,8 +17,9 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="about.html" class="nav-link active">About</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
                 <li><a href="services.html" class="nav-link">Services</a></li>
+                <li><a href="blog.html" class="nav-link active">Blog</a></li>
                 <li><a href="appointment.html" class="nav-link">Appointment</a></li>
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
@@ -29,18 +30,15 @@
             </div>
         </div>
     </nav>
-    <!-- nav end -->
 
-    <!-- main section for blog -->
     <main class="blog-container">
         <section class="blog-hero">
           <h1>Health & Wellness Blog</h1>
-          <p>Expert advice, patient stories, and the latest medical news</p>
+          <p>Expert medical advice, health tips, and the latest healthcare information</p>
         </section>
     
         <div class="blog-layout">
           <section class="blog-posts" id="blogPosts">
-            <!-- Posts will be loaded here via JavaScript -->
             <div class="loading">Loading articles...</div>
           </section>
     
@@ -49,15 +47,23 @@
               <h3>Categories</h3>
               <ul id="blogCategories">
                 <li><a href="#" data-category="all" class="active">All Articles</a></li>
+                <li><a href="#" data-category="Medical Tips">Medical Tips</a></li>
                 <li><a href="#" data-category="Health Tips">Health Tips</a></li>
-                <li><a href="#" data-category="Medical News">Medical News</a></li>
-                <li><a href="#" data-category="Patient Stories">Patient Stories</a></li>
+                <li><a href="#" data-category="Diseases">Diseases & Cures</a></li>
+                <li><a href="#" data-category="Prevention">Prevention</a></li>
               </ul>
             </div>
     
             <div class="search-box">
               <input type="text" id="blogSearch" placeholder="Search articles...">
               <button id="searchBtn">Search</button>
+            </div>
+
+            <div class="health-tips">
+              <h3>Quick Health Tips</h3>
+              <ul id="quickTips">
+                <!-- Will be populated by JavaScript -->
+              </ul>
             </div>
           </aside>
         </div>
@@ -66,8 +72,6 @@
           <!-- Pagination will be added here -->
         </div>
       </main>
-    <!-- main end -->
-
 
     <!-- Footer -->
     <footer class="footer">
@@ -88,7 +92,7 @@
                     <ul>
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="services.html">Services</a></li>
-                        <li><a href="appointment.html">Book Appointment</a></li>
+                        <li><a href="blog.html">Health Blog</a></li>
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </div>
@@ -107,6 +111,7 @@
         </div>
     </footer>
 
+    <script src="js/blog.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
