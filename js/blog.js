@@ -1,204 +1,215 @@
-// External APIs we'll use for medical content
-const MEDICAL_NEWS_API = 'https://api.medicalnewstoday.com/v1/articles';
-const HEALTH_TIPS_API = 'https://api.healthline.com/v1/tips';
-const DISEASE_INFO_API = 'https://api.cdc.gov/v1/diseases';
+// API Configuration
+const API_CONFIG = {
+    newsapi: {
+        url: 'https://newsapi.org/v2/top-headlines?category=health&apiKey=YOUR_NEWSAPI_KEY',
+        enabled: true
+    },
+    cdc: {
+        url: 'https://data.cdc.gov/resource/9mfq-cb36.json?$limit=10',
+        enabled: true
+    },
+    who: {
+        url: 'https://ghoapi.azureedge.net/api/Indicator?$top=5',
+        enabled: true
+    },
+    healthgov: {
+        url: 'https://health.gov/api/content/v1/topics.json',
+        enabled: true
+    }
+};
 
-// Cache for storing fetched articles
-let articlesCache = [];
-let currentCategory = 'all';
-let currentSearch = '';
-let currentPage = 1;
+// Global Variables
+let allArticles = [];
+let filteredArticles = [];
 const articlesPerPage = 6;
+let currentPage = 1;
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadArticles();
+// DOM Elements
+const blogPostsEl = document.getElementById('blogPosts');
+const paginationEl = document.getElementById('blogPagination');
+const searchInput = document.getElementById('globalSearch');
+const apiStatusEl = document.getElementById('apiStatus');
+
+// Initialize
+document.addEventListener('DOMContentLoaded', async () => {
+    await checkAPIs();
+    await loadAllArticles();
     setupEventListeners();
 });
 
-async function loadArticles() {
-    try {
-        showLoading(true);
+// API Health Check
+async function checkAPIs() {
+    apiStatusEl.innerHTML = '';
+    for (const [source, config] of Object.entries(API_CONFIG)) {
+        if (!config.enabled) continue;
         
-        // Check if we have cached articles
-        if (articlesCache.length === 0) {
-            // Fetch from multiple APIs (in a real app, you would handle each API separately)
-            // For demo purposes, we'll simulate fetching from different sources
-            const medicalNews = await fetchMedicalNews();
-            const healthTips = await fetchHealthTips();
-            const diseaseInfo = await fetchDiseaseInfo();
-            
-            // Combine all articles
-            articlesCache = [...medicalNews, ...healthTips, ...diseaseInfo];
+        const li = document.createElement('li');
+        try {
+            const test = await fetch(config.url, { method: 'HEAD' });
+            li.innerHTML = `<i class="fas fa-check-circle" style="color: green;"></i> ${source.toUpperCase()}`;
+        } catch (error) {
+            li.innerHTML = `<i class="fas fa-times-circle" style="color: red;"></i> ${source.toUpperCase()} (offline)`;
+            API_CONFIG[source].enabled = false;
         }
+        apiStatusEl.appendChild(li);
+    }
+}
+
+// Fetch All APIs
+async function loadAllArticles() {
+    showLoading(true);
+    
+    try {
+        const promises = [];
+        if (API_CONFIG.newsapi.enabled) promises.push(fetchNewsAPI());
+        if (API_CONFIG.cdc.enabled) promises.push(fetchCDC());
+        if (API_CONFIG.who.enabled) promises.push(fetchWHO());
+        if (API_CONFIG.healthgov.enabled) promises.push(fetchHealthGov());
+
+        const results = await Promise.allSettled(promises);
+        allArticles = results
+            .filter(result => result.status === 'fulfilled')
+            .flatMap(result => result.value);
+            
+        // Sort by date (newest first)
+        allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
         
-        // Filter articles based on category and search
-        let filteredArticles = filterArticles(articlesCache);
-        
-        // Paginate results
-        const paginatedArticles = paginateArticles(filteredArticles);
-        
-        // Render articles
-        renderArticles(paginatedArticles);
-        renderPagination(filteredArticles.length);
-        
-        // Load quick health tips
-        loadQuickTips();
+        filteredArticles = [...allArticles];
+        renderArticles();
     } catch (error) {
         showError('Failed to load articles. Please try again later.');
-        console.error('Error loading articles:', error);
     } finally {
         showLoading(false);
     }
 }
 
-// Simulated API calls (in a real app, you would make actual API calls)
-async function fetchMedicalNews() {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    return [
-        {
-            id: '1',
-            title: 'New Breakthrough in Cancer Treatment',
-            excerpt: 'Researchers have discovered a promising new approach to treating advanced cancers.',
-            content: '<p>Detailed content about the cancer treatment breakthrough...</p>',
-            category: 'Medical Tips',
-            date: '2025-05-15',
-            imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600',
-            author: 'Dr. Sarah Johnson'
-        },
-        {
-            id: '2',
-            title: 'The Future of Robotic Surgery',
-            excerpt: 'How robotic assistance is transforming surgical procedures.',
-            content: '<p>Detailed content about robotic surgery...</p>',
-            category: 'Medical Tips',
-            date: '2025-04-28',
-            imageUrl: 'https://images.unsplash.com/photo-1581595219315-a187dd40c322?w=600',
-            author: 'Dr. Michael Chen'
-        }
-    ];
+// Individual API Fetchers
+async function fetchNewsAPI() {
+    const response = await fetch(API_CONFIG.newsapi.url);
+    const data = await response.json();
+    return data.articles.map(article => ({
+        id: `newsapi-${article.url.hashCode()}`,
+        title: article.title,
+        excerpt: article.description || "No description available",
+        content: article.content || "Content not available",
+        category: "Medical News",
+        date: article.publishedAt,
+        imageUrl: article.urlToImage || 'images/default-news.jpg',
+        author: article.source?.name || "NewsAPI",
+        source: "newsapi"
+    }));
 }
 
-async function fetchHealthTips() {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    return [
-        {
-            id: '3',
-            title: '10 Daily Habits for Better Heart Health',
-            excerpt: 'Simple changes you can make to improve your cardiovascular health.',
-            content: '<p>Detailed content about heart health habits...</p>',
-            category: 'Health Tips',
-            date: '2025-05-10',
-            imageUrl: 'https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?w=600',
-            author: 'Dr. Emily Wilson'
-        },
-        {
-            id: '4',
-            title: 'Managing Stress in a Busy World',
-            excerpt: 'Effective techniques to reduce stress and improve mental wellbeing.',
-            content: '<p>Detailed content about stress management...</p>',
-            category: 'Health Tips',
-            date: '2025-04-22',
-            imageUrl: 'https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?w=600',
-            author: 'Dr. James Peterson'
-        }
-    ];
+async function fetchCDC() {
+    const response = await fetch(API_CONFIG.cdc.url);
+    const data = await response.json();
+    return data.map(item => ({
+        id: `cdc-${item.id}`,
+        title: `CDC Report: ${item.state || 'National Data'}`,
+        excerpt: `New cases: ${item.new_case || 'Data not available'}`,
+        content: JSON.stringify(item, null, 2),
+        category: "Disease Reports",
+        date: item.submission_date || new Date().toISOString(),
+        imageUrl: 'images/cdc-logo.jpg',
+        author: "Centers for Disease Control",
+        source: "cdc"
+    }));
 }
 
-async function fetchDiseaseInfo() {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    return [
-        {
-            id: '5',
-            title: 'Understanding Diabetes: Prevention and Management',
-            excerpt: 'Comprehensive guide to diabetes symptoms, prevention and treatment.',
-            content: '<p>Detailed content about diabetes...</p>',
-            category: 'Diseases',
-            date: '2025-05-05',
-            imageUrl: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=600',
-            author: 'Dr. Robert Taylor'
-        },
-        {
-            id: '6',
-            title: 'Seasonal Allergies: Causes and Remedies',
-            excerpt: 'How to identify and manage common seasonal allergies.',
-            content: '<p>Detailed content about seasonal allergies...</p>',
-            category: 'Diseases',
-            date: '2025-04-15',
-            imageUrl: 'https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=600',
-            author: 'Dr. Lisa Rodriguez'
-        }
-    ];
+async function fetchWHO() {
+    const response = await fetch(API_CONFIG.who.url);
+    const data = await response.json();
+    return data.value.map(item => ({
+        id: `who-${item.Id}`,
+        title: `WHO: ${item.IndicatorName || 'Global Health Data'}`,
+        excerpt: item.IndicatorCode || "World Health Organization data",
+        content: JSON.stringify(item, null, 2),
+        category: "Global Health",
+        date: new Date().toISOString(),
+        imageUrl: 'images/who-logo.jpg',
+        author: "World Health Organization",
+        source: "who"
+    }));
 }
 
-function filterArticles(articles) {
-    // Filter by category
-    let filtered = articles;
-    if (currentCategory !== 'all') {
-        filtered = filtered.filter(article => article.category === currentCategory);
-    }
-    
-    // Filter by search term
-    if (currentSearch) {
-        const searchTerm = currentSearch.toLowerCase();
-        filtered = filtered.filter(article => 
-            article.title.toLowerCase().includes(searchTerm) || 
-            article.excerpt.toLowerCase().includes(searchTerm) ||
-            article.content.toLowerCase().includes(searchTerm)
-        );
-    }
-    
-    return filtered;
+async function fetchHealthGov() {
+    const response = await fetch(API_CONFIG.healthgov.url);
+    const data = await response.json();
+    return data.items.map(item => ({
+        id: `healthgov-${item.id}`,
+        title: item.title,
+        excerpt: item.description || "Prevention tips from health.gov",
+        content: item.content || "See full article on health.gov",
+        category: "Prevention Tips",
+        date: item.last_updated,
+        imageUrl: 'images/health-gov.jpg',
+        author: "U.S. Department of Health",
+        source: "healthgov"
+    }));
 }
 
-function paginateArticles(articles) {
-    const startIndex = (currentPage - 1) * articlesPerPage;
-    return articles.slice(startIndex, startIndex + articlesPerPage);
-}
-
-function renderArticles(articles) {
-    const container = document.getElementById('blogPosts');
+// Render Articles
+function renderArticles() {
+    const startIdx = (currentPage - 1) * articlesPerPage;
+    const paginatedArticles = filteredArticles.slice(startIdx, startIdx + articlesPerPage);
     
-    if (!articles || articles.length === 0) {
-        container.innerHTML = '<div class="no-posts">No articles found matching your criteria.</div>';
-        return;
-    }
-    
-    container.innerHTML = articles.map(article => `
-        <article class="blog-post">
+    blogPostsEl.innerHTML = paginatedArticles.map(article => `
+        <article class="blog-post" data-source="${article.source}" data-category="${article.category}">
             <div class="post-image">
-                <img src="${article.imageUrl}" alt="${article.title}">
+                <img src="${article.imageUrl}" alt="${article.title}" loading="lazy">
+                <span class="source-badge">${article.source.toUpperCase()}</span>
             </div>
             <div class="post-content">
                 <div class="post-meta">
                     <span class="post-category">${article.category}</span>
                     <span class="post-date">${formatDate(article.date)}</span>
                 </div>
-                <h2><a href="blog-single.html?id=${article.id}">${article.title}</a></h2>
+                <h2><a href="blog-single.html?id=${article.id}&source=${article.source}">${article.title}</a></h2>
                 <p class="post-excerpt">${article.excerpt}</p>
-                <a href="blog-single.html?id=${article.id}" class="read-more">Read More</a>
+                <div class="post-footer">
+                    <span class="post-author"><i class="fas fa-user"></i> ${article.author}</span>
+                    <a href="blog-single.html?id=${article.id}&source=${article.source}" class="read-more">Read More</a>
+                </div>
             </div>
         </article>
     `).join('');
+    
+    renderPagination();
 }
 
-function renderPagination(totalArticles) {
-    const totalPages = Math.ceil(totalArticles / articlesPerPage);
-    const container = document.getElementById('blogPagination');
+// Search and Filter
+function filterArticles() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const activeSource = document.querySelector('.api-filter.active').dataset.source;
+    const activeCategory = document.querySelector('.categories a.active').dataset.category;
+    
+    filteredArticles = allArticles.filter(article => {
+        const matchesSearch = searchTerm === '' || 
+            article.title.toLowerCase().includes(searchTerm) || 
+            article.excerpt.toLowerCase().includes(searchTerm);
+        
+        const matchesSource = activeSource === 'all' || article.source === activeSource;
+        const matchesCategory = activeCategory === 'all' || article.category === activeCategory;
+        
+        return matchesSearch && matchesSource && matchesCategory;
+    });
+    
+    currentPage = 1;
+    renderArticles();
+}
+
+// Pagination
+function renderPagination() {
+    const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
     
     if (totalPages <= 1) {
-        container.innerHTML = '';
+        paginationEl.innerHTML = '';
         return;
     }
     
     let html = '';
     if (currentPage > 1) {
-        html += `<button class="page-btn" data-page="${currentPage - 1}">Previous</button>`;
+        html += `<button class="page-btn" data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i></button>`;
     }
     
     // Show limited page numbers
@@ -215,88 +226,76 @@ function renderPagination(totalArticles) {
     }
     
     if (currentPage < totalPages) {
-        html += `<button class="page-btn" data-page="${currentPage + 1}">Next</button>`;
+        html += `<button class="page-btn" data-page="${currentPage + 1}"><i class="fas fa-chevron-right"></i></button>`;
     }
     
-    container.innerHTML = html;
+    paginationEl.innerHTML = html;
     
     // Add event listeners
-    container.querySelectorAll('.page-btn').forEach(btn => {
+    paginationEl.querySelectorAll('.page-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             currentPage = parseInt(btn.dataset.page);
-            loadArticles();
+            renderArticles();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
 }
 
-function loadQuickTips() {
-    const tips = [
-        "Drink at least 8 glasses of water daily",
-        "Get 7-8 hours of sleep each night",
-        "Take a 5-minute break every hour if you sit for long",
-        "Wash your hands frequently to prevent infections",
-        "Include vegetables in every meal"
-    ];
-    
-    const container = document.getElementById('quickTips');
-    container.innerHTML = tips.map(tip => `<li>${tip}</li>`).join('');
-}
-
+// Event Listeners
 function setupEventListeners() {
-    // Category filtering
-    document.querySelectorAll('#blogCategories a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            currentCategory = link.dataset.category;
-            currentPage = 1;
-            
-            // Update active state
-            document.querySelectorAll('#blogCategories a').forEach(a => a.classList.remove('active'));
-            link.classList.add('active');
-            
-            loadArticles();
+    // Search
+    searchInput.addEventListener('input', debounce(filterArticles, 300));
+    document.getElementById('searchBtn').addEventListener('click', filterArticles);
+    
+    // Source filters
+    document.querySelectorAll('.api-filter').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.api-filter').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            filterArticles();
         });
     });
     
-    // Search functionality
-    const searchInput = document.getElementById('blogSearch');
-    document.getElementById('searchBtn').addEventListener('click', () => {
-        currentSearch = searchInput.value.trim();
-        currentPage = 1;
-        loadArticles();
-    });
-    
-    searchInput.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') {
-            currentSearch = searchInput.value.trim();
-            currentPage = 1;
-            loadArticles();
-        }
+    // Category filters
+    document.querySelectorAll('.categories a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.categories a').forEach(a => a.classList.remove('active'));
+            this.classList.add('active');
+            filterArticles();
+        });
     });
 }
 
+// Helper Functions
 function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
 }
 
 function showLoading(show) {
     const loader = document.querySelector('.loading');
-    if (loader) loader.style.display = show ? 'block' : 'none';
+    if (loader) loader.style.display = show ? 'flex' : 'none';
 }
 
 function showError(message) {
-    const errorElement = document.createElement('div');
-    errorElement.className = 'error-message';
-    errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-    
-    const container = document.querySelector('.blog-container');
-    if (container) {
-        const existing = document.querySelector('.error-message');
-        if (existing) existing.remove();
-        
-        container.insertBefore(errorElement, container.firstChild);
-        setTimeout(() => errorElement.remove(), 5000);
-    }
+    const errorEl = document.createElement('div');
+    errorEl.className = 'error-message';
+    errorEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+    blogPostsEl.parentNode.insertBefore(errorEl, blogPostsEl.nextSibling);
+    setTimeout(() => errorEl.remove(), 5000);
 }
+
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
+// Add hash code method for generating IDs
+String.prototype.hashCode = function() {
+    return this.split('').reduce((a,b) => {a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+};
