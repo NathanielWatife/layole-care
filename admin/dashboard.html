@@ -48,6 +48,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="blog-management.html" class="nav-link">
+                        <i class="fas fa-blog"></i>
+                        <span>Blog Management</span>
+                        <span class="badge" id="draftPostsBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="profile.html" class="nav-link">
                         <i class="fas fa-user-cog"></i>
                         <span>Profile</span>
@@ -90,57 +97,54 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-calendar-check"></i>
+                        <i class="fas fa-file-alt"></i>
                     </div>
                     <div class="stat-info">
-                        <h3 id="totalAppointments">0</h3>
-                        <p>Total Appointments</p>
-                        <span class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            +<span id="weeklyIncrease">0</span> this week
-                        </span>
+                        <h3 id="totalPosts">0</h3>
+                        <p>Total Posts</p>
                     </div>
                 </div>
-
+            
                 <div class="stat-card">
-                    <div class="stat-icon pending">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="pendingAppointments">0</h3>
-                        <p>Pending Appointments</p>
-                        <span class="stat-change">
-                            <i class="fas fa-calendar-day"></i>
-                            <span id="todayAppointments">0</span> today
-                        </span>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon completed">
+                    <div class="stat-icon published">
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="stat-info">
-                        <h3 id="completedAppointments">0</h3>
-                        <p>Completed Appointments</p>
-                        <span class="stat-change positive">
-                            <i class="fas fa-percentage"></i>
-                            <span id="completionRate">0</span>% completion rate
-                        </span>
+                        <h3 id="publishedPosts">0</h3>
+                        <p>Published Posts</p>
                     </div>
                 </div>
-
+            
                 <div class="stat-card">
-                    <div class="stat-icon cancelled">
-                        <i class="fas fa-times-circle"></i>
+                    <div class="stat-icon draft">
+                        <i class="fas fa-edit"></i>
                     </div>
                     <div class="stat-info">
-                        <h3 id="cancelledAppointments">0</h3>
-                        <p>Cancelled Appointments</p>
-                        <span class="stat-change negative">
-                            <i class="fas fa-percentage"></i>
-                            <span id="cancellationRate">0</span>% cancellation rate
-                        </span>
+                        <h3 id="draftPosts">0</h3>
+                        <p>Draft Posts</p>
+                    </div>
+                </div>
+            
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="weeklyPosts">0</h3>
+                        <p>This Week</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Update the activity section -->
+            <div class="activity-section">
+                <div class="recent-activity">
+                    <div class="section-header">
+                        <h3>Recent Blog Activity</h3>
+                        <a href="blog-management.html" class="view-all">View All</a>
+                    </div>
+                    <div class="activity-list" id="recentBlogActivity">
+                        <!-- Dynamic content -->
                     </div>
                 </div>
             </div>

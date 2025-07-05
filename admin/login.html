@@ -16,8 +16,8 @@
                     <i class="fas fa-hospital"></i>
                     <h1>Layole Hospital</h1>
                 </div>
-                <h2>Admin Login</h2>
-                <p>Access the administrative dashboard</p>
+                <h2>Blog Management Portal</h2>
+                <p>Access the content management system</p>
             </div>
 
             <form id="loginForm" class="login-form">
@@ -57,7 +57,7 @@
             </form>
 
             <div class="login-footer">
-                <p>Forgot your password? Contact system administrator</p>
+                <p>Forgot your password? <a href="#" id="resetPasswordLink">Reset password</a></p>
                 <div class="security-notice">
                     <i class="fas fa-shield-alt"></i>
                     <span>Secure login protected by encryption</span>
@@ -85,6 +85,118 @@
         </div>
     </div>
 
-    <script src="js/admin-auth.js"></script>
+    <!-- Password Reset Modal -->
+    <div id="resetPasswordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="resetPasswordForm">
+                    <div class="form-group">
+                        <label for="resetEmail">Email Address</label>
+                        <input type="email" id="resetEmail" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Reset Link</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin-auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle password visibility
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // Handle login form submission
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const rememberMe = document.getElementById('rememberMe').checked;
+                
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                
+                try {
+                    const response = await adminAuth.login(username, password, rememberMe);
+                    
+                    if (response.success) {
+                        // Check user role and redirect appropriately
+                        if (response.user.role === 'admin' || response.user.role === 'editor') {
+                            window.location.href = 'dashboard.html';
+                        } else {
+                            adminAuth.logout();
+                            showError('You do not have permission to access this portal');
+                        }
+                    } else {
+                        showError(response.message || 'Login failed');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showError('An error occurred during login');
+                } finally {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }
+            });
+
+            // Password reset functionality
+            const resetLink = document.getElementById('resetPasswordLink');
+            const resetModal = document.getElementById('resetPasswordModal');
+            
+            resetLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                resetModal.style.display = 'block';
+            });
+
+            document.querySelector('.close-modal').addEventListener('click', function() {
+                resetModal.style.display = 'none';
+            });
+
+            document.getElementById('resetPasswordForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('resetEmail').value;
+                
+                try {
+                    const response = await adminAuth.requestPasswordReset(email);
+                    if (response.success) {
+                        alert('Password reset link sent to your email');
+                        resetModal.style.display = 'none';
+                    } else {
+                        showError(response.message || 'Failed to send reset link');
+                    }
+                } catch (error) {
+                    console.error('Password reset error:', error);
+                    showError('Failed to process your request');
+                }
+            });
+
+            // Close error message
+            document.getElementById('closeError').addEventListener('click', function() {
+                document.getElementById('errorMessage').style.display = 'none';
+            });
+
+            function showError(message) {
+                document.getElementById('errorText').textContent = message;
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+
+            // Check for remembered credentials
+            if (localStorage.getItem('rememberedUsername')) {
+                document.getElementById('username').value = localStorage.getItem('rememberedUsername');
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+    </script>
 </body>
 </html>

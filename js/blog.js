@@ -1,301 +1,193 @@
-// API Configuration
-const API_CONFIG = {
-    newsapi: {
-        url: 'https://newsapi.org/v2/top-headlines?category=health&apiKey=YOUR_NEWSAPI_KEY',
-        enabled: true
-    },
-    cdc: {
-        url: 'https://data.cdc.gov/resource/9mfq-cb36.json?$limit=10',
-        enabled: true
-    },
-    who: {
-        url: 'https://ghoapi.azureedge.net/api/Indicator?$top=5',
-        enabled: true
-    },
-    healthgov: {
-        url: 'https://health.gov/api/content/v1/topics.json',
-        enabled: true
-    }
-};
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const blogPostsContainer = document.getElementById('blogPosts');
+    const searchInput = document.getElementById('blogSearch');
+    const searchBtn = document.getElementById('searchBtn');
+    const categoryLinks = document.querySelectorAll('.categories a');
+    const paginationLinks = document.querySelectorAll('.pagination a');
+    const subscribeForm = document.getElementById('subscribeForm');
 
-// Global Variables
-let allArticles = [];
-let filteredArticles = [];
-const articlesPerPage = 6;
-let currentPage = 1;
-
-// DOM Elements
-const blogPostsEl = document.getElementById('blogPosts');
-const paginationEl = document.getElementById('blogPagination');
-const searchInput = document.getElementById('globalSearch');
-const apiStatusEl = document.getElementById('apiStatus');
-
-// Initialize
-document.addEventListener('DOMContentLoaded', async () => {
-    await checkAPIs();
-    await loadAllArticles();
-    setupEventListeners();
-});
-
-// API Health Check
-async function checkAPIs() {
-    apiStatusEl.innerHTML = '';
-    for (const [source, config] of Object.entries(API_CONFIG)) {
-        if (!config.enabled) continue;
-        
-        const li = document.createElement('li');
-        try {
-            const test = await fetch(config.url, { method: 'HEAD' });
-            li.innerHTML = `<i class="fas fa-check-circle" style="color: green;"></i> ${source.toUpperCase()}`;
-        } catch (error) {
-            li.innerHTML = `<i class="fas fa-times-circle" style="color: red;"></i> ${source.toUpperCase()} (offline)`;
-            API_CONFIG[source].enabled = false;
+    // Sample data (in a real app, this would come from a database via API)
+    let blogPosts = [
+        {
+            id: 1,
+            title: "10 Ways to Maintain a Healthy Heart",
+            excerpt: "Learn about the best practices for cardiovascular health from our cardiology team...",
+            category: "Prevention Tips",
+            date: "June 15, 2023",
+            image: "images/blog-post1.jpg",
+            content: "Full content would be here..."
+        },
+        {
+            id: 2,
+            title: "New Pediatric Wing Now Open",
+            excerpt: "Our hospital has expanded with a state-of-the-art pediatric care facility...",
+            category: "Hospital News",
+            date: "May 28, 2023",
+            image: "images/blog-post2.jpg",
+            content: "Full content would be here..."
+        },
+        {
+            id: 3,
+            title: "Understanding Diabetes",
+            excerpt: "A comprehensive guide to managing diabetes from our endocrinology specialists...",
+            category: "Medical Advice",
+            date: "April 10, 2023",
+            image: "images/blog-post3.jpg",
+            content: "Full content would be here..."
+        },
+        {
+            id: 4,
+            title: "Seasonal Allergy Guide",
+            excerpt: "How to cope with seasonal allergies and when to seek medical help...",
+            category: "Prevention Tips",
+            date: "March 22, 2023",
+            image: "images/blog-post4.jpg",
+            content: "Full content would be here..."
+        },
+        {
+            id: 5,
+            title: "Our New MRI Machine",
+            excerpt: "We've upgraded our diagnostic imaging capabilities with the latest MRI technology...",
+            category: "Hospital News",
+            date: "February 15, 2023",
+            image: "images/blog-post5.jpg",
+            content: "Full content would be here..."
         }
-        apiStatusEl.appendChild(li);
-    }
-}
+    ];
 
-// Fetch All APIs
-async function loadAllArticles() {
-    showLoading(true);
-    
-    try {
-        const promises = [];
-        if (API_CONFIG.newsapi.enabled) promises.push(fetchNewsAPI());
-        if (API_CONFIG.cdc.enabled) promises.push(fetchCDC());
-        if (API_CONFIG.who.enabled) promises.push(fetchWHO());
-        if (API_CONFIG.healthgov.enabled) promises.push(fetchHealthGov());
+    // Display all blog posts initially
+    displayBlogPosts(blogPosts);
 
-        const results = await Promise.allSettled(promises);
-        allArticles = results
-            .filter(result => result.status === 'fulfilled')
-            .flatMap(result => result.value);
-            
-        // Sort by date (newest first)
-        allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        filteredArticles = [...allArticles];
-        renderArticles();
-    } catch (error) {
-        showError('Failed to load articles. Please try again later.');
-    } finally {
-        showLoading(false);
-    }
-}
-
-// Individual API Fetchers
-async function fetchNewsAPI() {
-    const response = await fetch(API_CONFIG.newsapi.url);
-    const data = await response.json();
-    return data.articles.map(article => ({
-        id: `newsapi-${article.url.hashCode()}`,
-        title: article.title,
-        excerpt: article.description || "No description available",
-        content: article.content || "Content not available",
-        category: "Medical News",
-        date: article.publishedAt,
-        imageUrl: article.urlToImage || 'images/default-news.jpg',
-        author: article.source?.name || "NewsAPI",
-        source: "newsapi"
-    }));
-}
-
-async function fetchCDC() {
-    const response = await fetch(API_CONFIG.cdc.url);
-    const data = await response.json();
-    return data.map(item => ({
-        id: `cdc-${item.id}`,
-        title: `CDC Report: ${item.state || 'National Data'}`,
-        excerpt: `New cases: ${item.new_case || 'Data not available'}`,
-        content: JSON.stringify(item, null, 2),
-        category: "Disease Reports",
-        date: item.submission_date || new Date().toISOString(),
-        imageUrl: 'images/cdc-logo.jpg',
-        author: "Centers for Disease Control",
-        source: "cdc"
-    }));
-}
-
-async function fetchWHO() {
-    const response = await fetch(API_CONFIG.who.url);
-    const data = await response.json();
-    return data.value.map(item => ({
-        id: `who-${item.Id}`,
-        title: `WHO: ${item.IndicatorName || 'Global Health Data'}`,
-        excerpt: item.IndicatorCode || "World Health Organization data",
-        content: JSON.stringify(item, null, 2),
-        category: "Global Health",
-        date: new Date().toISOString(),
-        imageUrl: 'images/who-logo.jpg',
-        author: "World Health Organization",
-        source: "who"
-    }));
-}
-
-async function fetchHealthGov() {
-    const response = await fetch(API_CONFIG.healthgov.url);
-    const data = await response.json();
-    return data.items.map(item => ({
-        id: `healthgov-${item.id}`,
-        title: item.title,
-        excerpt: item.description || "Prevention tips from health.gov",
-        content: item.content || "See full article on health.gov",
-        category: "Prevention Tips",
-        date: item.last_updated,
-        imageUrl: 'images/health-gov.jpg',
-        author: "U.S. Department of Health",
-        source: "healthgov"
-    }));
-}
-
-// Render Articles
-function renderArticles() {
-    const startIdx = (currentPage - 1) * articlesPerPage;
-    const paginatedArticles = filteredArticles.slice(startIdx, startIdx + articlesPerPage);
-    
-    blogPostsEl.innerHTML = paginatedArticles.map(article => `
-        <article class="blog-post" data-source="${article.source}" data-category="${article.category}">
-            <div class="post-image">
-                <img src="${article.imageUrl}" alt="${article.title}" loading="lazy">
-                <span class="source-badge">${article.source.toUpperCase()}</span>
-            </div>
-            <div class="post-content">
-                <div class="post-meta">
-                    <span class="post-category">${article.category}</span>
-                    <span class="post-date">${formatDate(article.date)}</span>
-                </div>
-                <h2><a href="blog-single.html?id=${article.id}&source=${article.source}">${article.title}</a></h2>
-                <p class="post-excerpt">${article.excerpt}</p>
-                <div class="post-footer">
-                    <span class="post-author"><i class="fas fa-user"></i> ${article.author}</span>
-                    <a href="blog-single.html?id=${article.id}&source=${article.source}" class="read-more">Read More</a>
-                </div>
-            </div>
-        </article>
-    `).join('');
-    
-    renderPagination();
-}
-
-// Search and Filter
-function filterArticles() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const activeSource = document.querySelector('.api-filter.active').dataset.source;
-    const activeCategory = document.querySelector('.categories a.active').dataset.category;
-    
-    filteredArticles = allArticles.filter(article => {
-        const matchesSearch = searchTerm === '' || 
-            article.title.toLowerCase().includes(searchTerm) || 
-            article.excerpt.toLowerCase().includes(searchTerm);
-        
-        const matchesSource = activeSource === 'all' || article.source === activeSource;
-        const matchesCategory = activeCategory === 'all' || article.category === activeCategory;
-        
-        return matchesSearch && matchesSource && matchesCategory;
+    // Search functionality
+    searchBtn.addEventListener('click', function() {
+        const searchTerm = searchInput.value.toLowerCase();
+        filterPosts(searchTerm);
     });
-    
-    currentPage = 1;
-    renderArticles();
-}
 
-// Pagination
-function renderPagination() {
-    const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
-    
-    if (totalPages <= 1) {
-        paginationEl.innerHTML = '';
-        return;
-    }
-    
-    let html = '';
-    if (currentPage > 1) {
-        html += `<button class="page-btn" data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i></button>`;
-    }
-    
-    // Show limited page numbers
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-    
-    if (endPage - startPage + 1 < maxVisiblePages) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-    
-    for (let i = startPage; i <= endPage; i++) {
-        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-    }
-    
-    if (currentPage < totalPages) {
-        html += `<button class="page-btn" data-page="${currentPage + 1}"><i class="fas fa-chevron-right"></i></button>`;
-    }
-    
-    paginationEl.innerHTML = html;
-    
-    // Add event listeners
-    paginationEl.querySelectorAll('.page-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            currentPage = parseInt(btn.dataset.page);
-            renderArticles();
+    searchInput.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            const searchTerm = searchInput.value.toLowerCase();
+            filterPosts(searchTerm);
+        }
+    });
+
+    // Category filtering
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Update active state
+            categoryLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            const category = this.getAttribute('data-category');
+            filterByCategory(category);
+        });
+    });
+
+    // Pagination
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Update active state
+            paginationLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            // In a real app, this would load the appropriate page of results
+            // For now, we'll just scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
-}
 
-// Event Listeners
-function setupEventListeners() {
-    // Search
-    searchInput.addEventListener('input', debounce(filterArticles, 300));
-    document.getElementById('searchBtn').addEventListener('click', filterArticles);
-    
-    // Source filters
-    document.querySelectorAll('.api-filter').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.api-filter').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            filterArticles();
-        });
-    });
-    
-    // Category filters
-    document.querySelectorAll('.categories a').forEach(link => {
-        link.addEventListener('click', function(e) {
+    // Subscription form
+    if (subscribeForm) {
+        subscribeForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            document.querySelectorAll('.categories a').forEach(a => a.classList.remove('active'));
-            this.classList.add('active');
-            filterArticles();
+            const email = this.querySelector('input[type="email"]').value;
+            
+            // In a real app, you would send this to your backend
+            console.log('Subscribed email:', email);
+            alert('Thank you for subscribing to our blog updates!');
+            this.reset();
         });
-    });
-}
+    }
 
-// Helper Functions
-function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-}
+    // Function to display blog posts
+    function displayBlogPosts(posts) {
+        blogPostsContainer.innerHTML = '';
+        
+        if (posts.length === 0) {
+            blogPostsContainer.innerHTML = '<p class="no-results">No blog posts found.</p>';
+            return;
+        }
+        
+        posts.forEach(post => {
+            const postElement = document.createElement('article');
+            postElement.className = 'blog-post';
+            postElement.innerHTML = `
+                <div class="post-image">
+                    <img src="${post.image}" alt="${post.title}">
+                </div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="post-date">${post.date}</span>
+                        <span class="post-category">${post.category}</span>
+                    </div>
+                    <h2 class="post-title">${post.title}</h2>
+                    <p class="post-excerpt">${post.excerpt}</p>
+                    <a href="post.html?id=${post.id}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            `;
+            blogPostsContainer.appendChild(postElement);
+        });
+    }
 
-function showLoading(show) {
-    const loader = document.querySelector('.loading');
-    if (loader) loader.style.display = show ? 'flex' : 'none';
-}
+    // Function to filter posts by search term
+    function filterPosts(searchTerm) {
+        if (!searchTerm) {
+            displayBlogPosts(blogPosts);
+            return;
+        }
+        
+        const filteredPosts = blogPosts.filter(post => 
+            post.title.toLowerCase().includes(searchTerm) || 
+            post.excerpt.toLowerCase().includes(searchTerm) ||
+            post.category.toLowerCase().includes(searchTerm)
+        );
+        
+        displayBlogPosts(filteredPosts);
+    }
 
-function showError(message) {
-    const errorEl = document.createElement('div');
-    errorEl.className = 'error-message';
-    errorEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-    blogPostsEl.parentNode.insertBefore(errorEl, blogPostsEl.nextSibling);
-    setTimeout(() => errorEl.remove(), 5000);
-}
+    // Function to filter posts by category
+    function filterByCategory(category) {
+        if (category === 'all') {
+            displayBlogPosts(blogPosts);
+            return;
+        }
+        
+        const filteredPosts = blogPosts.filter(post => 
+            post.category === category
+        );
+        
+        displayBlogPosts(filteredPosts);
+    }
 
-function debounce(func, wait) {
-    let timeout;
-    return function() {
-        const context = this, args = arguments;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(context, args), wait);
-    };
-}
-
-// Add hash code method for generating IDs
-String.prototype.hashCode = function() {
-    return this.split('').reduce((a,b) => {a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
-};
+    // In a real application, you would fetch posts from your API:
+    /*
+    async function fetchBlogPosts() {
+        try {
+            const response = await fetch('/api/blog-posts');
+            const data = await response.json();
+            blogPosts = data;
+            displayBlogPosts(blogPosts);
+        } catch (error) {
+            console.error('Error fetching blog posts:', error);
+            blogPostsContainer.innerHTML = '<p class="error">Failed to load blog posts. Please try again later.</p>';
+        }
+    }
+    
+    fetchBlogPosts();
+    */
+});

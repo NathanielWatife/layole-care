@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Blog Post - Layole Hospital</title>
+    <link rel="stylesheet" href="../css/admin-blog.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Include any rich text editor CSS here -->
+</head>
+<body class="admin-page">
+    <!-- Sidebar (same as dashboard.html) -->
+    <aside class="sidebar">...</aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1 id="editorTitle">New Blog Post</h1>
+            <div class="action-buttons">
+                <button id="saveDraftBtn" class="btn btn-secondary">
+                    <i class="fas fa-save"></i> Save Draft
+                </button>
+                <button id="publishBtn" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Publish
+                </button>
+                <button id="deleteBtn" class="btn btn-danger" style="display: none;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </header>
+
+        <div class="blog-editor-container">
+            <form id="blogPostForm">
+                <div class="form-group">
+                    <label for="postTitle">Title</label>
+                    <input type="text" id="postTitle" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="postCategories">Categories</label>
+                        <select id="postCategories" multiple>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="postStatus">Status</label>
+                        <select id="postStatus" disabled>
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="featuredImage">Featured Image</label>
+                    <div class="image-upload">
+                        <input type="file" id="featuredImage" accept="image/*">
+                        <div class="image-preview" id="imagePreview">
+                            <span>No image selected</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="postExcerpt">Excerpt</label>
+                    <textarea id="postExcerpt" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="postContent">Content</label>
+                    <!-- Rich text editor will be initialized here -->
+                    <div id="postContentEditor"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="seoTitle">SEO Title</label>
+                    <input type="text" id="seoTitle">
+                </div>
+
+                <div class="form-group">
+                    <label for="seoDescription">SEO Description</label>
+                    <textarea id="seoDescription" rows="2"></textarea>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Include any rich text editor JS here -->
+    <script src="../js/admin-auth.js"></script>
+    <script src="../js/admin-blog-editor.js"></script>
+</body>
+</html>

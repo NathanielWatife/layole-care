@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Blog - Layole Hospital</title>
+    <title>Hospital Blog - Layole Hospital</title>
     <link rel="stylesheet" href="css/blog.css">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -22,6 +22,7 @@
                 <li><a href="blog.html" class="nav-link active">Blog</a></li>
                 <li><a href="appointment.html" class="nav-link">Appointment</a></li>
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="admin/login.html" class="nav-link admin-link">Admin</a></li>
             </ul>
             <div class="hamburger">
                 <span class="bar"></span>
@@ -33,28 +34,47 @@
 
     <main class="blog-container">
         <section class="blog-hero">
-            <h1>Medical Insights Hub</h1>
-            <p>Trusted health information from global sources</p>
+            <h1>Hospital News & Health Tips</h1>
+            <p>Official health information and updates from Layole Hospital</p>
         </section>
 
         <div class="search-box">
-            <input type="text" id="globalSearch" placeholder="Search articles...">
+            <input type="text" id="blogSearch" placeholder="Search blog posts...">
             <button id="searchBtn"><i class="fas fa-search"></i></button>
-        </div>
-
-        <div class="api-filters">
-            <button class="api-filter active" data-source="all">All Sources</button>
-            <button class="api-filter" data-source="newsapi">Health News</button>
-            <button class="api-filter" data-source="cdc">Disease Data</button>
-            <button class="api-filter" data-source="who">WHO Reports</button>
-            <button class="api-filter" data-source="healthgov">Prevention Tips</button>
         </div>
 
         <div class="blog-layout">
             <section class="blog-posts" id="blogPosts">
-                <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i> Loading medical updates...
-                </div>
+                <!-- Sample blog post (will be populated dynamically from database) -->
+                <article class="blog-post">
+                    <div class="post-image">
+                        <img src="images/blog-post1.jpg" alt="Healthy Lifestyle">
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <span class="post-date">June 15, 2023</span>
+                            <span class="post-category">Prevention Tips</span>
+                        </div>
+                        <h2 class="post-title">10 Ways to Maintain a Healthy Heart</h2>
+                        <p class="post-excerpt">Learn about the best practices for cardiovascular health from our cardiology team...</p>
+                        <a href="post.html?id=1" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="blog-post">
+                    <div class="post-image">
+                        <img src="images/blog-post2.jpg" alt="Hospital Update">
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <span class="post-date">May 28, 2023</span>
+                            <span class="post-category">Hospital News</span>
+                        </div>
+                        <h2 class="post-title">New Pediatric Wing Now Open</h2>
+                        <p class="post-excerpt">Our hospital has expanded with a state-of-the-art pediatric care facility...</p>
+                        <a href="post.html?id=2" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
             </section>
 
             <aside class="blog-sidebar">
@@ -62,24 +82,66 @@
                     <h3>Categories</h3>
                     <ul>
                         <li><a href="#" data-category="all" class="active">All Topics</a></li>
-                        <li><a href="#" data-category="Medical News">Medical News</a></li>
-                        <li><a href="#" data-category="Disease Reports">Disease Reports</a></li>
-                        <li><a href="#" data-category="Prevention Tips">Prevention</a></li>
-                        <li><a href="#" data-category="Global Health">Global Health</a></li>
+                        <li><a href="#" data-category="Hospital News">Hospital News</a></li>
+                        <li><a href="#" data-category="Medical Advice">Medical Advice</a></li>
+                        <li><a href="#" data-category="Prevention Tips">Prevention Tips</a></li>
+                        <li><a href="#" data-category="Doctor's Corner">Doctor's Corner</a></li>
                     </ul>
                 </div>
 
-                <div class="api-status">
-                    <h3>Data Sources</h3>
-                    <ul id="apiStatus">
-                        <li><i class="fas fa-circle-notch fa-spin"></i> Checking APIs...</li>
+                <div class="popular-posts">
+                    <h3>Popular Posts</h3>
+                    <ul>
+                        <li><a href="post.html?id=3">Understanding Diabetes</a></li>
+                        <li><a href="post.html?id=4">Seasonal Allergy Guide</a></li>
+                        <li><a href="post.html?id=5">Our New MRI Machine</a></li>
                     </ul>
+                </div>
+
+                <div class="subscribe-box">
+                    <h3>Subscribe to Updates</h3>
+                    <form id="subscribeForm">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
                 </div>
             </aside>
         </div>
 
-        <div class="pagination" id="blogPagination"></div>
+        <div class="pagination">
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#"><i class="fas fa-chevron-right"></i></a>
+        </div>
     </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Layole Hospital</h3>
+                <p>Providing quality healthcare services to our community since 1985.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>123 Medical Drive<br>Health City, HC 12345</p>
+                <p>Phone: (123) 456-7890</p>
+                <p>Email: info@layolehospital.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Layole Hospital. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script src="js/blog.js"></script>
     <script src="js/script.js"></script>
