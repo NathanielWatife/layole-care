@@ -1,209 +1,70 @@
-# Hospital Website Project
+# Getting Started with Create React App
 
-A complete hospital website with separate frontend and backend, featuring appointment booking, contact forms, and email notifications.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Project Structure
+## Available Scripts
 
-\`\`\`
-hospital-website/
-├── frontend/
-│   ├── index.html
-│   ├── about.html
-│   ├── services.html
-│   ├── appointment.html
-│   ├── contact.html
-│   ├── css/
-│   │   └── style.css
-│   └── js/
-│       └── script.js
-└── backend/
-    ├── controller
-    ├── config
-    ├── models
-    ├── middleware
-    ├── routes
-    ├── utils
-    ├── scripts
-    ├── server.js
-    ├── package.json
-    ├── .env.example
-    └── README.md
-\`\`\`
+In the project directory, you can run:
 
-## Features
+### `npm start`
 
-### Frontend
-- **Responsive Design**: Mobile-first approach with modern CSS
-- **Multiple Pages**: Home, About, Services, Appointment, Contact
-- **Interactive Forms**: Appointment booking and contact forms
-- **Google Maps Integration**: Hospital location and directions
-- **Accessibility**: WCAG compliant with proper ARIA labels
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-### Backend
-- **RESTful API**: Express.js server with proper routing
-- **Database**: MongoDB with Mongoose ODM
-- **Email Service**: Nodemailer for appointment confirmations
-- **Security**: Helmet, CORS, rate limiting
-- **Validation**: Input validation and sanitization
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-## Setup Instructions
+### `npm test`
 
-### Backend Setup
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-1. **Install Dependencies**
-   \`\`\`bash
-   cd backend
-   npm install
-   \`\`\`
+### `npm run build`
 
-2. **Environment Configuration**
-   \`\`\`bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   \`\`\`
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-3. **Database Setup**
-   - Install MongoDB locally or use MongoDB Atlas
-   - Update MONGODB_URI in .env file
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-4. **Email Configuration**
-   - Set up Gmail App Password or SMTP service
-   - Update email credentials in .env file
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-5. **Start Server**
-   \`\`\`bash
-   npm run dev  # Development mode
-   npm start    # Production mode
-   \`\`\`
+### `npm run eject`
 
-### Frontend Setup
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-1. **Serve Static Files**
-   \`\`\`bash
-   cd frontend
-   # Using Python
-   python -m http.server 8080
-   
-   # Using Node.js
-   npx serve -p 8080
-   
-   # Using Live Server (VS Code extension)
-   # Right-click index.html and select "Open with Live Server"
-   \`\`\`
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-2. **Update API Endpoints**
-   - Ensure frontend JavaScript points to correct backend URL
-   - Default: `http://localhost:3000`
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-## API Endpoints
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-### Appointments
-- `POST /api/appointments` - Book new appointment
-- `GET /api/appointments` - Get all appointments (admin)
+## Learn More
 
-### Contact
-- `POST /api/contact` - Submit contact form
-- `GET /api/contacts` - Get all contacts (admin)
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-### Utility
-- `GET /api/health` - Health check
-- `GET /api/directions` - Hospital location data
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-## Database Schema
+### Code Splitting
 
-### Appointments
-\`\`\`javascript
-{
-  firstName: String (required),
-  lastName: String (required),
-  email: String (required),
-  phone: String (required),
-  dateOfBirth: Date (required),
-  gender: String (required),
-  address: String,
-  department: String (required),
-  doctor: String,
-  appointmentDate: Date (required),
-  appointmentTime: String (required),
-  reason: String (required),
-  insurance: String,
-  status: String (default: 'pending'),
-  createdAt: Date (default: now)
-}
-\`\`\`
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Contacts
-\`\`\`javascript
-{
-  firstName: String (required),
-  lastName: String (required),
-  email: String (required),
-  phone: String,
-  subject: String (required),
-  message: String (required),
-  status: String (default: 'new'),
-  createdAt: Date (default: now)
-}
-\`\`\`
+### Analyzing the Bundle Size
 
-## Email Templates
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-The system sends automated emails for:
-- Appointment confirmations to patients
-- New appointment notifications to hospital staff
-- Contact form confirmations to senders
-- New contact notifications to hospital staff
+### Making a Progressive Web App
 
-## Security Features
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-- **Helmet**: Security headers
-- **CORS**: Cross-origin resource sharing
-- **Rate Limiting**: Prevents spam and abuse
-- **Input Validation**: Server-side validation
-- **Environment Variables**: Secure configuration
+### Advanced Configuration
 
-## Customization
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Adding New Services
-1. Update `services.html` with new service information
-2. Add service option to appointment form dropdown
-3. Update backend validation if needed
+### Deployment
 
-### Styling Changes
-- Modify `frontend/css/style.css`
-- Update color scheme in CSS variables
-- Customize responsive breakpoints
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### Email Templates
-- Edit email HTML in `backend/server.js`
-- Add hospital branding and styling
-- Customize confirmation messages
+### `npm run build` fails to minify
 
-## Deployment
-
-### Frontend Deployment
-- Deploy to Netlify, Vercel, or GitHub Pages
-- Update API URLs for production
-
-### Backend Deployment
-- Deploy to Heroku, Railway, or DigitalOcean
-- Set environment variables in hosting platform
-- Use MongoDB Atlas for database
-
-## Troubleshooting
-
-### Common Issues
-1. **CORS Errors**: Check frontend URL in backend CORS configuration
-2. **Email Not Sending**: Verify SMTP credentials and app passwords
-3. **Database Connection**: Ensure MongoDB is running and URI is correct
-4. **Form Submission**: Check network tab for API call errors
-
-### Development Tips
-- Use browser developer tools for debugging
-- Check server logs for backend errors
-- Test email functionality with test accounts
-- Validate forms before submission
-
-## License
-
-MIT License - feel free to use for your hospital or medical facility.
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
