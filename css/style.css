@@ -574,7 +574,8 @@ body {
 
 .emergency-features {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
+  justify-content: space-evenly;
   gap: 15px;
   margin: 30px 0;
 }
@@ -901,6 +902,7 @@ body {
 
 .map-placeholder-content {
   text-align: center;
+  display: flex;
   color: #666;
 }
 
@@ -970,7 +972,6 @@ body {
 /* Emergency Contact Banner */
 .emergency-contact {
   padding: 40px 0;
-  background: linear-gradient(135deg, #dc3545, #c82333);
 }
 
 .emergency-banner {
@@ -980,7 +981,7 @@ body {
   background: rgba(255, 255, 255, 0.1);
   padding: 30px;
   border-radius: 10px;
-  color: white;
+  /* color: white; */
 }
 
 .emergency-content {
