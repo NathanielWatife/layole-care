@@ -99,8 +99,9 @@ window.addEventListener('click', (e) => {
 // Initialize auth check when page loads
 document.addEventListener('DOMContentLoaded', checkAuth);
 
+
 // Utility function for making API requests
-async function makeRequest(url, method = 'GET', body = null, requiresAuth = false) {
+async function makeRequest(url, method = 'GET', body = null, requiresAuth = false, retries = 3) {
     const headers = {
         'Content-Type': 'application/json'
     };
@@ -122,14 +123,32 @@ async function makeRequest(url, method = 'GET', body = null, requiresAuth = fals
         options.body = JSON.stringify(body);
     }
     
-    const response = await fetch(`${API_BASE_URL}${url}`, options);
-    
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Something went wrong');
+    try {
+        // Check internet connection first
+        if (!navigator.onLine) {
+            throw new Error('No internet connection. Please check your network and try again.');
+        }
+
+        const response = await fetch(`${API_BASE_URL}${url}`, options);
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Something went wrong');
+        }
+        
+        return response.json();
+    } catch (error) {
+        if (retries){
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            return makeRequest(url, method, body, requiresAuth, retries - 1);
+        }
+        throw error
+        // Handle different types of errors
+        if (error.message === 'Failed to fetch') {
+            throw new Error('Could not connect to the server. Please try again later.');
+        }
+        throw error; // Re-throw other errors
     }
-    
-    return response.json();
 }
 
 // Get URL parameters
@@ -139,8 +158,7 @@ function getUrlParameter(name) {
     const results = regex.exec(location.search);
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
-js/auth.js
-javascript
+
 document.addEventListener('DOMContentLoaded', function() {
     // Login form submission
     const loginForm = document.getElementById('loginForm');
@@ -165,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 checkAuth();
                 
                 // Redirect to home page or show success message
-                window.location.href = 'index.html';
+                window.location.href = 'blog.html';
             } catch (error) {
                 alert(error.message);
             }
@@ -200,3 +218,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Network status indicator
+function updateNetworkStatus() {
+    const statusElement = document.createElement('div');
+    statusElement.id = 'network-status';
+    statusElement.style.position = 'fixed';
+    statusElement.style.bottom = '20px';
+    statusElement.style.right = '20px';
+    statusElement.style.padding = '10px 20px';
+    statusElement.style.borderRadius = '5px';
+    statusElement.style.zIndex = '1000';
+    
+    if (!navigator.onLine) {
+        statusElement.textContent = '⚠️ Offline - No internet connection';
+        statusElement.style.backgroundColor = 'var(--error-color)';
+        statusElement.style.color = 'white';
+    } else {
+        statusElement.textContent = '✓ Online';
+        statusElement.style.backgroundColor = 'var(--success-color)';
+        statusElement.style.color = 'white';
+    }
+    
+    // Remove existing status if it exists
+    const existingStatus = document.getElementById('network-status');
+    if (existingStatus) {
+        existingStatus.remove();
+    }
+    
+    document.body.appendChild(statusElement);
+}
+
+// Initial check
+updateNetworkStatus();
+
+// Listen for network changes
+window.addEventListener('online', updateNetworkStatus);
+window.addEventListener('offline', updateNetworkStatus);

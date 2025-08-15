@@ -57,29 +57,44 @@ document.addEventListener('DOMContentLoaded', function() {
         confirmPasswordInput.addEventListener('input', validatePasswordMatch);
         registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            if (!validatePasswordMatch()){
-                showError("Passwords do not match", registerForm);
+            
+            // Show loading state
+            const submitButton = registerForm.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Registering...';
+            
+            if (!validatePasswordMatch()) {
+                showError("Passwords don't match", registerForm);
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
                 return;
             }
-
+            
             const username = document.getElementById('register-username').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
-
+            
             try {
                 const response = await makeRequest('/auth/register', 'POST', {
-                    username,email,password
+                    username,
+                    email,
+                    password
                 });
-                // auto login after registration
+                
+                // Auto-login after registration
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('username', response.data.user.username);
                 localStorage.setItem('userId', response.data.user.id);
-
-                // redirect to home page
+                
+                // Redirect to home page
                 window.location.href = 'blog.html';
-            } catch (error){
+            } catch (error) {
                 showError(error.message, registerForm);
+            } finally {
+                // Reset button state
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
             }
         });
     }
@@ -153,4 +168,38 @@ function showError(message, formElement) {
     } else {
         formElement.insertAdjacentElement('afterbegin', errorElement);
     }
+}
+
+
+function showError(message, formElement) {
+    // Remove any existing error messages
+    const existingError = formElement.querySelector('.form-error');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    const errorElement = document.createElement('div');
+    errorElement.className = 'form-error';
+    errorElement.style.color = 'var(--error-color)';
+    errorElement.style.margin = '1rem 0';
+    errorElement.style.padding = '10px';
+    errorElement.style.borderRadius = '4px';
+    errorElement.style.backgroundColor = '#ffeeee';
+    errorElement.style.border = '1px solid var(--error-color)';
+    errorElement.style.textAlign = 'center';
+    errorElement.textContent = message;
+    
+    // Insert after the form header or at the top of the form
+    const formHeader = formElement.querySelector('h2');
+    if (formHeader) {
+        formHeader.insertAdjacentElement('afterend', errorElement);
+    } else {
+        formElement.insertAdjacentElement('afterbegin', errorElement);
+    }
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        errorElement.style.opacity = '0';
+        setTimeout(() => errorElement.remove(), 500);
+    }, 5000);
 }
