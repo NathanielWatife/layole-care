@@ -15,10 +15,6 @@
                 <ul>
                     <li><a href="blog.html">Home</a></li>
                     <li><a href="create-blog.html">Create Post</a></li>
-                    <li id="auth-links">
-                        <a href="login.html" id="login-link">Login</a> / 
-                        <a href="register.html" id="register-link">Register</a>
-                    </li>
                 </ul>
             </nav>
         </div>
@@ -31,6 +27,10 @@
                 <div class="form-group">
                     <label for="blog-title">Title</label>
                     <input type="text" id="blog-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="blog-author">Author Name</label>
+                    <input type="text" id="blog-author" placeholder="Author name">
                 </div>
                 <div class="form-group">
                     <label for="blog-description">Description</label>
@@ -66,8 +66,7 @@
         </div>
     </footer>
 
-    <script src="js/auth.js"></script>
-    <script src="js/blog.js"></script>
+    <script src="js/create-blog.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

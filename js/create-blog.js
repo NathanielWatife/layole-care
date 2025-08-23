@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadBlogForEditing(blogId) {
     try {
-        const response = await makeRequest(`/blogs/${blogId}`);
+        const response = await makeRequest(`/api/blogs/${blogId}`);
         const blog = response.blog;
         
         document.getElementById('blog-title').value = blog.title;
@@ -61,11 +61,11 @@ async function handleFormSubmit(e) {
         
         if (blogId) {
             // Update existing blog
-            response = await makeRequest(`/blogs/${blogId}`, 'PUT', blogData);
+            response = await makeRequest(`/api/blogs/${blogId}`, 'PUT', blogData);
             showMessage('Blog updated successfully!', 'success');
         } else {
             // Create new blog
-            response = await makeRequest('/blogs', 'POST', blogData);
+            response = await makeRequest('/api/blogs', 'POST', blogData);
             showMessage('Blog published successfully!', 'success');
         }
         

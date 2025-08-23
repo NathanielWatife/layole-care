@@ -10,7 +10,7 @@ async function loadBlogDetails() {
     }
     
     try {
-        const response = await makeRequest(`/blogs/${blogId}`);
+        const response = await makeRequest(`/api/blogs/${blogId}`);
         displayBlogDetails(response.blog);
     } catch (error) {
         console.error('Error loading blog:', error);
