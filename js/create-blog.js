@@ -55,7 +55,7 @@ async function handleFormSubmit(e) {
             title: document.getElementById('blog-title').value,
             author: document.getElementById('blog-author').value,
             description: document.getElementById('blog-description').value,
-            tags: tagsArray,
+            tags: tagsInput,
             image: document.getElementById('blog-image').value,
             body: document.getElementById('blog-body').value,
             state: document.getElementById('blog-state').value
