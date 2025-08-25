@@ -185,7 +185,6 @@ if (contactForm) {
         lastName: formData.get("lastName"),
         email: formData.get("email"),
         phone: formData.get("phone") || "",
-        subject: formData.get("subject"),
         message: formData.get("message")
       };
 
