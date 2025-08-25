@@ -47,7 +47,7 @@ async function handleFormSubmit(e) {
         submitButton.disabled = true;
         submitButton.textContent = 'Publishing...';
 
-        // process tags - covert from comma-seperatd string to array
+        // process tags - covert from comma-separated string to array
         const tagsInput = document.getElementById('blog-tags').value;
         const tagsArray = tagsInput ? tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '') : [];
         
@@ -55,7 +55,7 @@ async function handleFormSubmit(e) {
             title: document.getElementById('blog-title').value,
             author: document.getElementById('blog-author').value,
             description: document.getElementById('blog-description').value,
-            tags: document.getElementById('blog-tags').value,
+            tags: tagsArray,
             image: document.getElementById('blog-image').value,
             body: document.getElementById('blog-body').value,
             state: document.getElementById('blog-state').value
