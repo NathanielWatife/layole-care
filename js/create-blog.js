@@ -80,6 +80,12 @@ async function handleFormSubmit(e) {
             window.location.href = `blog-details.html?id=${response.blog._id}`;
         }, 1500);
     } catch (error) {
+        console.error('Full error:', error);
+
+        let userMessage = error.message;
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            userMessage = 'Network error: Cannot connect to the server. Please check your internet connection and try again.';
+        }
         showMessage('Error: ' + error.message);
     } finally {
         // Reset button state
