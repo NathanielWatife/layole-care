@@ -22,6 +22,7 @@ async function loadBlogForEditing(blogId) {
         document.getElementById('blog-tags').value = blog.tags?.join(', ') || '';
         document.getElementById('blog-image').value = blog.image || '';
         document.getElementById('blog-body').value = blog.body;
+        document.getElementById('blog-state').value = blog.site || 'published';
         
         // Update form title and button
         document.querySelector('h2').textContent = 'Edit Blog Post';
@@ -45,6 +46,10 @@ async function handleFormSubmit(e) {
         // Show loading state
         submitButton.disabled = true;
         submitButton.textContent = 'Publishing...';
+
+        // process tags - covert from comma-seperatd string to array
+        const tagsInput = document.getElementById('blog-tags').value;
+        const tagsArray = tagsInput ? tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '') : [];
         
         const blogData = {
             title: document.getElementById('blog-title').value,
@@ -52,7 +57,8 @@ async function handleFormSubmit(e) {
             description: document.getElementById('blog-description').value,
             tags: document.getElementById('blog-tags').value,
             image: document.getElementById('blog-image').value,
-            body: document.getElementById('blog-body').value
+            body: document.getElementById('blog-body').value,
+            state: document.getElementById('blog-state').value
         };
         
         // Determine if we're creating or updating
