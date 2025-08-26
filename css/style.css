@@ -94,6 +94,13 @@ body {
   transition: 0.3s;
 }
 
+/* Favicon styles */
+.favicon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
 /* Hero Section Fixes */
 .hero {
   margin-top: 70px;
